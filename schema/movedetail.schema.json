@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "movedetail.schema.json",
+  "title": "move detail Schema",
+
+  "$defs": {
+    "Detail": {
+      "type": "object",
+      "required": ["Pit"],
+      "properties": {
+        "Pit":{"$ref": "pit.schema.json#/$defs/Pit"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

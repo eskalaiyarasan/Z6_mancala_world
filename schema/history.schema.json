@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "history.schema.json",
+  "title": "move history Schema",
+
+  "$defs": {
+    "MoveHistory": {
+      "type": "object",
+      "required": ["Move"],
+      "properties": {
+        "Move": {
+          "$ref": "move.schema.json#/$defs/Move"
+        },
+        "Details": {
+          "type": "array",
+          "items": {
+            "$ref": "movedetail.schema.json#/$defs/Detail"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
