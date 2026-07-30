@@ -1,16 +1,16 @@
 import os
 import json
+import sys
 
 def generate_cpp_from_schemas(schema_dir):
     classes_code = []
     factory_cases = []
 
-    # Map json-schema types/formats to C++ types
     def get_cpp_type(prop_schema, prop_name):
         if "$ref" in prop_schema:
             ref_name = prop_schema["$ref"].split("/")[-1]
-            return ref_name
-        
+            return f"Z6{ref_name}Json"
+
         t = prop_schema.get("type")
         if t == "boolean":
             return "bool"
@@ -18,39 +18,44 @@ def generate_cpp_from_schemas(schema_dir):
             return "int"
         elif t == "string":
             return "std::string"
+        elif t == "object":
+            # If an inline object or generic object is defined without a $ref
+            return "Z6json"
         elif t == "array":
             items = prop_schema.get("items", {})
             if "$ref" in items:
-                item_type = items["$ref"].split("/")[-1]
+                item_type = f"Z6{items['$ref'].split('/')[-1]}Json"
             else:
                 item_type = get_cpp_type(items, "item")
             return f"std::vector<{item_type}>"
         return "std::string"
 
-    # Read all schema files in directory
     for filename in sorted(os.listdir(schema_dir)):
         if not filename.endswith(".json"):
             continue
-        
+
         filepath = os.path.join(schema_dir, filename)
         with open(filepath, "r") as f:
             try:
                 schema_data = json.load(f)
             except Exception as e:
+                print(f"exception line 42:{e}")
                 continue
 
         defs = schema_data.get("$defs", {})
-        for class_name, class_def in defs.items():
+        for raw_class_name, class_def in defs.items():
             if class_def.get("type") != "object":
                 continue
 
-            factory_cases.append(f'        if (type == "{class_name}") return std::make_unique<{class_name}>();')
-            
+            class_name = f"Z6{raw_class_name}Json"
+
+            factory_cases.append(f'        if (type == "{raw_class_name}" || type == "{class_name}") return std::make_unique<{class_name}>();')
+
             properties = class_def.get("properties", {})
-            
-            # Generate fields and validity flags
+
             fields_decl = []
             constructor_inits = []
+            copy_constructor_inits = []
             getters = []
             setters = []
             from_json_lines = []
@@ -63,8 +68,7 @@ def generate_cpp_from_schemas(schema_dir):
 
                 fields_decl.append(f"    {cpp_type} {field_name};")
                 fields_decl.append(f"    bool {valid_name};")
-                
-                # Constructor initialization
+
                 default_val = prop_schema.get("default")
                 if default_val is not None:
                     if cpp_type == "std::string":
@@ -78,10 +82,11 @@ def generate_cpp_from_schemas(schema_dir):
                         constructor_inits.append(f"{field_name}(0)")
                     elif cpp_type == "bool":
                         constructor_inits.append(f"{field_name}(false)")
-                
-                constructor_inits.append(f"{valid_name}(false)")
 
-                # Getter implementation with validation flag & array index check
+                constructor_inits.append(f"{valid_name}(false)")
+                copy_constructor_inits.append(f"{field_name}(other.{field_name})")
+                copy_constructor_inits.append(f"{valid_name}(other.{valid_name})")
+
                 if cpp_type.startswith("std::vector<"):
                     inner_type = cpp_type[12:-1]
                     getters.append(f"""    bool get{prop_name}(size_t index, {inner_type}& val) const {{
@@ -101,15 +106,12 @@ def generate_cpp_from_schemas(schema_dir):
         return true;
     }}""")
 
-                # Setter implementation
                 setters.append(f"""    void set{prop_name}(const {cpp_type}& val) {{
         {field_name} = val;
         {valid_name} = true;
     }}""")
 
-                # from_json logic
                 if cpp_type.startswith("std::vector<") and not ("std::vector<int>" in cpp_type or "std::vector<std::string>" in cpp_type):
-                    # Complex object vector parsing
                     from_json_lines.append(f"""        if (j.contains("{prop_name}")) {{
             {field_name}.clear();
             for (const auto& item : j["{prop_name}"]) {{
@@ -130,13 +132,11 @@ def generate_cpp_from_schemas(schema_dir):
             {valid_name} = true;
         }}""")
                 else:
-                    # Nested single object reference
                     from_json_lines.append(f"""        if (j.contains("{prop_name}")) {{
             {field_name}.from_json(j["{prop_name}"].dump());
             {valid_name} = true;
         }}""")
 
-                # to_json logic
                 if cpp_type.startswith("std::vector<") and not ("std::vector<int>" in cpp_type or "std::vector<std::string>" in cpp_type):
                     to_json_lines.append(f"""        if ({valid_name}) {{
             json arr = json::array();
@@ -154,17 +154,39 @@ def generate_cpp_from_schemas(schema_dir):
             j["{prop_name}"] = {field_name};
         }}""")
 
-            # Construct class string
             init_list = ", ".join(constructor_inits)
             if init_list:
                 init_list = " : " + init_list
+
+            copy_init_list = ", ".join(copy_constructor_inits)
+            if copy_init_list:
+                copy_init_list = " : " + copy_init_list
+
+            assignment_copies = []
+            for prop_name in properties.keys():
+                field_name = f"{prop_name[0].lower()}{prop_name[1:]}_"
+                valid_name = f"{field_name}valid_"
+                assignment_copies.append(f"            {field_name} = other.{field_name};")
+                assignment_copies.append(f"            {valid_name} = other.{valid_name};")
 
             class_code = f"""class {class_name} : public Z6json {{
 private:
 {'\n'.join(fields_decl)}
 
 public:
+    // Default Constructor
     {class_name}(){init_list} {{}}
+
+    // Copy Constructor
+    {class_name}(const {class_name}& other){copy_init_list} {{}}
+
+    // Copy Assignment Operator
+    {class_name}& operator=(const {class_name}& other) {{
+        if (this != &other) {{
+{'\n'.join(assignment_copies)}
+        }}
+        return *this;
+    }}
 
 {'\n\n'.join(getters)}
 
@@ -184,7 +206,6 @@ public:
 """
             classes_code.append(class_code)
 
-    # Generate final complete C++ file header and content
     header_content = f"""#include <iostream>
 #include <string>
 #include <vector>
@@ -212,6 +233,7 @@ public:
 """
     return header_content
 
-# Example usage:
-# cpp_code = generate_cpp_from_schemas("./schemas")
-# print(cpp_code)
+if len(sys.argv) > 2:
+    cpp_code = generate_cpp_from_schemas(sys.argv[1])
+    with open(sys.argv[2], "w") as file:
+        file.write(cpp_code)

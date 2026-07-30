@@ -25,6 +25,9 @@
           "minimum": 1,
           "default":10
         },
+        "Side":{
+          "type":"integer"
+        },
         "Share":{
           "type":"array",
           "items": {
