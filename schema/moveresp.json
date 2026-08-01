@@ -4,7 +4,7 @@
   "title": "move response Schema",
 
   "$defs": {
-    "Board": {
+    "BoardResp": {
       "type": "object",
       "required": ["Nsides","Nseeds","Npits","Pits","Nround"],
       "properties": {

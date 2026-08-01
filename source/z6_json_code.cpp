@@ -1,17 +1,14 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <memory>
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
-
-class Z6json {
-public:
-    virtual ~Z6json() = default;
-    virtual void from_json(const std::string& json_str) = 0;
-    virtual std::string to_json() const = 0;
-};
+/**
+ * @file source/singleton/singleton.h
+ * @author  kalaiyarasan S
+ * @date 2026-08-01
+ *
+ * @copyright Copyright (c) 2026. All rights reserved.
+ * This code and all associated intellectual property completely
+ * belong to the ZERASIX GAMING STUDIO LLP.
+ * Unauthorized copying, distribution, or use is strictly prohibited.
+ */
+#include "z6_json_code.h"
 
 class Z6BoardJson : public Z6json {
 private:
@@ -710,7 +707,7 @@ public:
     }
 };
 
-class Z6BoardJson : public Z6json {
+class Z6BoardRespJson : public Z6json {
 private:
     bool active_;
     bool active_valid_;
@@ -735,13 +732,13 @@ private:
 
 public:
     // Default Constructor
-    Z6BoardJson() : active_(true), active_valid_(false), turn_(0), turn_valid_(false), nsides_(2), nsides_valid_(false), nseeds_(4), nseeds_valid_(false), npits_(7), npits_valid_(false), pits_valid_(false), nround_(1), nround_valid_(false), visibility_("TRANSPARENT"), visibility_valid_(false), history_valid_(false), details_valid_(false) {}
+    Z6BoardRespJson() : active_(true), active_valid_(false), turn_(0), turn_valid_(false), nsides_(2), nsides_valid_(false), nseeds_(4), nseeds_valid_(false), npits_(7), npits_valid_(false), pits_valid_(false), nround_(1), nround_valid_(false), visibility_("TRANSPARENT"), visibility_valid_(false), history_valid_(false), details_valid_(false) {}
 
     // Copy Constructor
-    Z6BoardJson(const Z6BoardJson& other) : active_(other.active_), active_valid_(other.active_valid_), turn_(other.turn_), turn_valid_(other.turn_valid_), nsides_(other.nsides_), nsides_valid_(other.nsides_valid_), nseeds_(other.nseeds_), nseeds_valid_(other.nseeds_valid_), npits_(other.npits_), npits_valid_(other.npits_valid_), pits_(other.pits_), pits_valid_(other.pits_valid_), nround_(other.nround_), nround_valid_(other.nround_valid_), visibility_(other.visibility_), visibility_valid_(other.visibility_valid_), history_(other.history_), history_valid_(other.history_valid_), details_(other.details_), details_valid_(other.details_valid_) {}
+    Z6BoardRespJson(const Z6BoardRespJson& other) : active_(other.active_), active_valid_(other.active_valid_), turn_(other.turn_), turn_valid_(other.turn_valid_), nsides_(other.nsides_), nsides_valid_(other.nsides_valid_), nseeds_(other.nseeds_), nseeds_valid_(other.nseeds_valid_), npits_(other.npits_), npits_valid_(other.npits_valid_), pits_(other.pits_), pits_valid_(other.pits_valid_), nround_(other.nround_), nround_valid_(other.nround_valid_), visibility_(other.visibility_), visibility_valid_(other.visibility_valid_), history_(other.history_), history_valid_(other.history_valid_), details_(other.details_), details_valid_(other.details_valid_) {}
 
     // Copy Assignment Operator
-    Z6BoardJson& operator=(const Z6BoardJson& other) {
+    Z6BoardRespJson& operator=(const Z6BoardRespJson& other) {
         if (this != &other) {
             active_ = other.active_;
             active_valid_ = other.active_valid_;
@@ -1583,7 +1580,7 @@ public:
         if (type == "Move" || type == "Z6MoveJson") return std::make_unique<Z6MoveJson>();
         if (type == "Detail" || type == "Z6DetailJson") return std::make_unique<Z6DetailJson>();
         if (type == "MoveReq" || type == "Z6MoveReqJson") return std::make_unique<Z6MoveReqJson>();
-        if (type == "Board" || type == "Z6BoardJson") return std::make_unique<Z6BoardJson>();
+        if (type == "BoardResp" || type == "Z6BoardRespJson") return std::make_unique<Z6BoardRespJson>();
         if (type == "Pit" || type == "Z6PitJson") return std::make_unique<Z6PitJson>();
         if (type == "Root" || type == "Z6RootJson") return std::make_unique<Z6RootJson>();
         if (type == "Rules" || type == "Z6RulesJson") return std::make_unique<Z6RulesJson>();

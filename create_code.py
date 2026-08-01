@@ -5,6 +5,7 @@ import sys
 def generate_cpp_from_schemas(schema_dir):
     classes_code = []
     factory_cases = []
+    forward_decl=[]
 
     def get_cpp_type(prop_schema, prop_name):
         if "$ref" in prop_schema:
@@ -48,6 +49,7 @@ def generate_cpp_from_schemas(schema_dir):
                 continue
 
             class_name = f"Z6{raw_class_name}Json"
+            forward_decl.append(f"class {class_name};")
 
             factory_cases.append(f'        if (type == "{raw_class_name}" || type == "{class_name}") return std::make_unique<{class_name}>();')
 
@@ -220,6 +222,8 @@ public:
     virtual void from_json(const std::string& json_str) = 0;
     virtual std::string to_json() const = 0;
 }};
+//forward declaration
+{'\n'.join(forward_decl)}
 
 {'\n'.join(classes_code)}
 
