@@ -29,12 +29,13 @@ using json = nlohmann::json;
 // ==========================================
 class Z6PipelineContext{
     protected:
+        int context_id;
         int client_fd;
     public:
-        int has_error=0;
-        Z6PipelineContext(int fd):client_fd(fd){}
+        int has_error;
+        Z6PipelineContext(int fd):client_fd(fd),context_id(-1), has_error(0){}
         int get_client(){return client_fd;}
-        virtual Z6PipelineContext get()=0;
+        virtual ~Z6PipelineContext()=0;
 };
 
 class Z6PipelineStage {
@@ -76,7 +77,6 @@ public:
 
     void Process( Z6PipelineContext  *context) {
         for (const auto& stage : stages_) {
-            if (context->has_error) break;
             context = stage->Execute(context);
         }
     }

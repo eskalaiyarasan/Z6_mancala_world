@@ -12,6 +12,7 @@
 #include <iostream>
 #include <mutex>
 #include <z6_json_code.h>
+#include <z6_storage.h>
 // Base class template enforcing Z6Singleton behavior on derived classes
 template <typename Derived>
 class Z6Singleton {
@@ -35,9 +36,11 @@ protected:
     virtual ~Z6Singleton() = default;
 };
 
-class Z6Root: public Z6Singleton<Z6Root>{
-    friend class Z6Singleton<Z6Root>;
+class Z6ChartNplayers: public Z6Singleton<int>{
+    friend class Z6Singleton<int>;
     private :
-        Z6Root(){};
-
+        Z6ChartNplayers();
+        Z6Storage<int> _store;
+    public:
+        int get(std::string name);
 }

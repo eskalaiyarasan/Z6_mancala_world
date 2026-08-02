@@ -22,6 +22,25 @@ private:
          std::unordered_map<std::string , TContext> store_;
          std::mutex mtx_;
 public:
-    virtual ~Z6Storage() = default;
-    virtual std::unique_ptr<TContext> find(const std::string& id )=0;
+    std::unique_ptr<TContext> find(const std::string& id ){
+        std::lock_guard<std::mutex> lock(mtx_);
+        auto it = store_.find(id);
+        if (it != store_.end()) {
+            return &(it->second);
+        }
+        return nullptr;
+    }
+    bool save(const std::string& key,  TContext data){
+        std::lock_guard<std::mutex> lock(mtx_);
+        store_[std::string(key)] = data;
+    }
+    bool erase(const std::string& key){
+        std::lock_guard<std::mutex> lock(mtx_);
+        size_t num_erased = store_.erase(key);
+        if (num_erased > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
