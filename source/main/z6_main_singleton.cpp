@@ -8,7 +8,7 @@
  * belong to the ZERASIX GAMING STUDIO LLP.
  * Unauthorized copying, distribution, or use is strictly prohibited.
  */
-#include <z6_singleton.h>
+#include <z6_main_singleton.h>
 #include <fstream>
 #include <string>
 #define MAP_NPLAYERS_NAME   "/schema/z6_players_required.json"

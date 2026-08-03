@@ -73,6 +73,8 @@ Z6PipelineContext*  Z6WaitingStage::Execute(Z6PipelineContext *context) {
                 if( Z6ChartNplayers::getInstance().get(name) >= found->count() ){
                     local_.erase(key)
                     return found;
+                }else{
+                    return nullptr;
                 }
             }
             return nullptr;
@@ -89,10 +91,7 @@ Z6PipelineContext*  Z6PublishStage::Execute(Z6PipelineContext *context) {
         return context;
     }
     context->publish();
-    // Sleep for 2 seconds
-    std::this_thread::sleep_for(std::chrono::seconds(10));
     context->erase();
-
     return context;
 }
 
@@ -125,14 +124,26 @@ int Z6WaitingPipelineContext::count(){
 bool Z6WaitingPipelineContext::publish(){
     std::lock_guard<std::mutex> lock(mtx_);
     for (auto fd : fd_list_){
-        write(fd, uuid_str_.c_str(), uuid_str_.length());
+        Z6MainSocketServer::getInstance().get().SendResponse(fd, uuid_str_);
     }
 }
 
 bool Z6WaitingPipelineContext::erase(){
     std::lock_guard<std::mutex> lock(mtx_);
     for (auto fd : fd_list_){
-        close(fd );
+        Z6MainSocketServer::getInstance().get().CloseClient(fd );
     }
     return true;
+}
+
+Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others){
+    json_ = others.get();
+    context_id = 0;
+    fd = others.get_client();
+}
+
+Z6PipelineContext* new_main_pipelineContext(int fd , const char *data){
+    std:string data_str(data);
+    auto ret = new  Z6ValidationPipelineContext(fd,data_str);
+    return ret;
 }

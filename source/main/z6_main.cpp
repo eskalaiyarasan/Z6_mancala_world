@@ -9,7 +9,30 @@
  * Unauthorized copying, distribution, or use is strictly prohibited.
  */
 
+#include "z6_main_pipeline.h"
+#include "z6_main_singleton.h"
+#include <stdexcept>
 
-#include <z6_storage.h>
-#include <z6_json_code.h>
-#include <z6_pipeline.h>
+int main(){
+    try {
+        Z6ChartNplayers::getInstance();
+        auto main_hash =std::make_shared< Z6Storage<Z6ValidationPipelineContext> >()
+        Z6Pipeline pipeline;
+        pipeline.AddStage(std::make_shared<Z6ValidationStage>());
+        pipeline.AddStage(std::make_shared<Z6WaitingStage>(main_hash));
+        pipeline.AddStage(std::make_shared<Z6PublishStage>());
+
+        // Create thread pool: 4 standard workers, 1 reserved emergency worker
+        auto thread_pool = std::make_shared<Z6PrioritizedThreadPool>(10, 1, pipeline);
+        auto server = Z6MainSocketServer::getInstance().get();
+        auto callback = [&thread_pool](int fd, const char* data) {
+                thread_pool->Enqueue(new_main_pipelineContext(fd ,data));
+            };
+        server.SetResponseCallback(callback);
+        server.run();
+    }catch (const std::exception& e) {
+        std::cerr << "Fatal Error: " << e.what() << "\n";
+        return 1;
+    }
+    return 0;
+}

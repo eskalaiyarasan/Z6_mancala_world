@@ -33,6 +33,7 @@ class Z6PipelineContext{
         int client_fd;
     public:
         int has_error;
+        int is_emergency;
         Z6PipelineContext(int fd):client_fd(fd),context_id(-1), has_error(0){}
         int get_client(){return client_fd;}
         virtual ~Z6PipelineContext()=0;
@@ -44,29 +45,7 @@ public:
     virtual Z6PipelineContext* Execute(Z6PipelineContext *context) = 0;
 };
 
-class Z6SelectionStage : public Z6PipelineStage {
-
-public:
-   Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
-};
-
-class Z6PreprocessorStage : public Z6PipelineStage {
-    public:
-        Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
-};
-
-class ActionStage : public Z6PipelineStage {
-    public:
-        Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
-};
-
-class ResultStage : public Z6PipelineStage {
-    public:
-        Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
-};
-
-
-class Pipeline {
+class Z6Pipeline {
 private:
     std::vector<std::shared_ptr<Z6PipelineStage>> stages_;
 
@@ -79,5 +58,6 @@ public:
         for (const auto& stage : stages_) {
             context = stage->Execute(context);
         }
+        delete context;
     }
 };

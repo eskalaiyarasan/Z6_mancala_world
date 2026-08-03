@@ -23,7 +23,8 @@ class Z6ValidationPipelineContext: public Z6PipelineContext{
     protected:
         std::string json_;
     public:
-        Z6ValidationPipelineContext(int fd , std::string msg):Z6PipelineContext(fd),json_(msg){context_id=0;}
+        Z6ValidationPipelineContext(int fd ,const std::string &msg):Z6PipelineContext(fd),json_(msg){context_id=0;}
+        Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others);
         std::string get() {return json_;}
 };
 class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
@@ -50,7 +51,7 @@ class Z6WaitingStage : public Z6PipelineStage {
 private:
     std::shared_ptr< Z6Storage<Z6ValidationPipelineContext> > local_;
 public:
-    Z6WaitingStage(std::shared_ptr< Z6Storage<Z6ValidationPipelineContext> > l):local_(l){}
+    Z6WaitingStage(std::shared_ptr< Z6Storage<Z6ValidationPipelineContext> > st):local_(st){}
    Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
 };
 class Z6PublishStage : public Z6PipelineStage {
@@ -58,3 +59,5 @@ class Z6PublishStage : public Z6PipelineStage {
 public:
    Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
 };
+
+Z6PipelineContext* new_main_pipelineContext(int fd , const char *data);
