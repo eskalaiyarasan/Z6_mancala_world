@@ -18,7 +18,7 @@
 #include <fstream>
 #include <z6_uuid.h>
 
-using nlohmann::json_validator;
+#include <z6_json_code.h>
 #define GAME_SCHEMA_JSON   "/schema/game.schema.json"
 
 Z6WaitingPipelineContext::Z6WaitingPipelineContext(Z6ValidationPipelineContext *data):Z6ValidationPipelineContext(*data){
@@ -33,19 +33,12 @@ std::unique_ptr<Z6PipelineContext>  Z6ValidationStage::Execute(std::unique_ptr<Z
     }
     Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context.get();
     try{
-        json_validator validator;
-        std::ifstream schema_file(GAME_SCHEMA_JSON);
-        if (!schema_file.is_open()) {
-            std::cerr << "Failed to open root.schema.json\n";
-            return 1;
+        if( ! Z6GameJson::validate(c->get()) ){
+            c->has_error = 1;
         }
-        // 2. Parse the schema file directly into a nlohmann::json object
-        json schema_document = json::parse(schema_file);
-        validator.set_root_schema(schema_document);
-        validator.validate(c->get());
     }catch (const std::exception &e) {
             std::cerr << "Validation failed: " << e.what() << '\n';
-            has_error = 1;
+            c->has_error = 1;
         }
     return context;
 }
