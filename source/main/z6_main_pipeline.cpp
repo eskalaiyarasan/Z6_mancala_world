@@ -11,15 +11,12 @@
 
 
 #include <z6_storage.h>
-#include <z6_json_code.h>
+#include <game.schema.h>
 #include <z6_main_pipeline.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json-schema.hpp>
 #include <fstream>
 #include <z6_uuid.h>
-
-#include <z6_json_code.h>
-#define GAME_SCHEMA_JSON   "/schema/game.schema.json"
 
 Z6WaitingPipelineContext::Z6WaitingPipelineContext(Z6ValidationPipelineContext *data):Z6ValidationPipelineContext(*data){
     context_id=2;

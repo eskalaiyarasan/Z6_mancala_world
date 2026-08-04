@@ -30,7 +30,7 @@ int main(){
                 thread_pool->Enqueue(new_main_pipelineContext(fd ,data));
             };
         server.SetResponseCallback(callback);
-        server.run();
+        server.Run();
     }catch (const std::exception& e) {
         std::cerr << "Fatal Error: " << e.what() << "\n";
         return 1;
