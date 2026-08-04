@@ -17,20 +17,21 @@
 #include <nlohmann/json-schema.hpp>
 #include <fstream>
 #include <z6_uuid.h>
-#include <thread>
-#include <chrono>
+
 using nlohmann::json_validator;
 #define GAME_SCHEMA_JSON   "/schema/game.schema.json"
 
 Z6WaitingPipelineContext::Z6WaitingPipelineContext(Z6ValidationPipelineContext *data):Z6ValidationPipelineContext(*data){
     context_id=2;
     uuid_str_=z6_uuid();
+    client_fd = data->get_client();
+    has_error = data->has_error;
 }
-Z6PipelineContext*  Z6ValidationStage::Execute(Z6PipelineContext *context) {
+std::unique_ptr<Z6PipelineContext>  Z6ValidationStage::Execute(std::unique_ptr<Z6PipelineContext>context) {
     if(context->has_error>0){
         return context;
     }
-    Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context;
+    Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context.get();
     try{
         json_validator validator;
         std::ifstream schema_file(GAME_SCHEMA_JSON);
@@ -49,11 +50,11 @@ Z6PipelineContext*  Z6ValidationStage::Execute(Z6PipelineContext *context) {
     return context;
 }
 
-Z6PipelineContext*  Z6WaitingStage::Execute(Z6PipelineContext *context) {
+std::unique_ptr<Z6PipelineContext>  Z6WaitingStage::Execute(std::unique_ptr<Z6PipelineContext>context) {
     if(context->has_error>0){
         return context;
     }
-    Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context;
+    Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context.get();
     Z6GameJson  gamejson;
     bool  human=false;
     int level;
@@ -64,34 +65,37 @@ Z6PipelineContext*  Z6WaitingStage::Execute(Z6PipelineContext *context) {
         if( gamejson.getName(name) && (gamejson.getLevel(level) ){
             std::string key = name + key;
             auto found = local_.find(key);
-            if ( found == nullptr){
-                auto w = new Z6WaitingPipelineContext(c);
+            if ( !found ){
+                auto w = std::make_unique<Z6WaitingPipelineContext>(c);
+                w.get()->addme(c);
                 local_.save(key, w);
-                w->addme(c);
+
             }else{
                 found->addme(c);
-                if( Z6ChartNplayers::getInstance().get(name) >= found->count() ){
-                    local_.erase(key)
+                if( Z6ChartNplayers::getInstance().get(name) >= found.get()->count() ){
+                    local_.erase(key);
                     return found;
                 }else{
+                    local_.save(key,found);
                     return nullptr;
                 }
             }
             return nullptr;
         }
     }else{
-       auto w = new Z6WaitingPipelineContext(c);
+       auto w = std::make_unique<Z6WaitingPipelineContext>(c);
+       w.get()->addme(c);
        return w;
     }
 }
 
-Z6PipelineContext*  Z6PublishStage::Execute(Z6PipelineContext *context) {
+std::unique_ptr<Z6PipelineContext>  Z6PublishStage::Execute(std::unique_ptr<Z6PipelineContext>context) {
 
-    if((context == nullptr )&&(context->has_error>0){
+    if((context == nullptr ) || (context.get()->has_error>0){
         return context;
     }
-    context->publish();
-    context->erase();
+    context.get()->publish();
+    context.get()->erase();
     return context;
 }
 
@@ -126,6 +130,7 @@ bool Z6WaitingPipelineContext::publish(){
     for (auto fd : fd_list_){
         Z6MainSocketServer::getInstance().get().SendResponse(fd, uuid_str_);
     }
+    return true;
 }
 
 bool Z6WaitingPipelineContext::erase(){
@@ -142,8 +147,8 @@ Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others){
     fd = others.get_client();
 }
 
-Z6PipelineContext* new_main_pipelineContext(int fd , const char *data){
+std::unique_ptr<Z6PipelineContext> new_main_pipelineContext(int fd , const char *data){
     std:string data_str(data);
-    auto ret = new  Z6ValidationPipelineContext(fd,data_str);
-    return ret;
+
+    return std::make_unique<Z6ValidationPipelineContext>(fd,data_str);
 }

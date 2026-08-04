@@ -16,7 +16,8 @@
 int main(){
     try {
         Z6ChartNplayers::getInstance();
-        auto main_hash =std::make_shared< Z6Storage<Z6ValidationPipelineContext> >()
+        Z6ProcessManager::getInstance();
+        auto main_hash =std::make_shared< Z6Storage< std::unique_ptr <Z6ValidationPipelineContext> > >();
         Z6Pipeline pipeline;
         pipeline.AddStage(std::make_shared<Z6ValidationStage>());
         pipeline.AddStage(std::make_shared<Z6WaitingStage>(main_hash));

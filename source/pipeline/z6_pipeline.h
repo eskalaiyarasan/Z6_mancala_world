@@ -42,7 +42,7 @@ class Z6PipelineContext{
 class Z6PipelineStage {
 public:
     virtual ~Z6PipelineStage() = default;
-    virtual Z6PipelineContext* Execute(Z6PipelineContext *context) = 0;
+    virtual std::unique_ptr<Z6PipelineContext> Execute(std::unique_ptr<Z6PipelineContext >context) = 0;
 };
 
 class Z6Pipeline {
@@ -54,10 +54,9 @@ public:
         stages_.push_back(stage);
     }
 
-    void Process( Z6PipelineContext  *context) {
+    void Process( std::unique_ptr<Z6PipelineContext> context) {
         for (const auto& stage : stages_) {
-            context = stage->Execute(context);
+            context = stage->Execute(std::move(context)) ;
         }
-        delete context;
     }
 };

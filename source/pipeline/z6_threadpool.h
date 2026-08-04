@@ -11,6 +11,7 @@
 
 #pragma once
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <queue>
 #include <thread>
@@ -24,8 +25,8 @@ private:
     std::vector<std::thread> standard_workers_;
     std::vector<std::thread> emergency_workers_;
 
-    std::queue<std::shared_ptr<Z6PipelineContext>> standard_queue_;
-    std::queue<std::shared_ptr<Z6PipelineContext>> emergency_queue_;
+    std::queue<std::unique_ptr<Z6PipelineContext>> standard_queue_;
+    std::queue<std::unique_ptr<Z6PipelineContext>> emergency_queue_;
 
     std::mutex std_mtx_;
     std::mutex emg_mtx_;
@@ -34,7 +35,7 @@ private:
     std::condition_variable emg_cv_;
 
     bool stop_ = false;
-    Pipeline pipeline_;
+    Z6Pipeline &pipeline_;
 
 
 
@@ -43,9 +44,9 @@ private:
     void EmergencyWorkerLoop();
 
 public:
-    Z6PrioritizedThreadPool(size_t standard_threads, size_t reserved_emergency_threads, Pipeline pipeline);
+    Z6PrioritizedThreadPool(size_t standard_threads, size_t reserved_emergency_threads, Z6Pipeline &pipeline);
 
     ~Z6PrioritizedThreadPool() ;
 
-    void Enqueue(Z6PipelineContext *context);
+    void Enqueue(std::unique_ptr<Z6PipelineContext> context);
 };

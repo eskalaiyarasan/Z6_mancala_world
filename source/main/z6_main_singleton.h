@@ -13,6 +13,7 @@
 #include <z6_json_code.h>
 #include <z6_storage.h>
 #include <z6_socket.h>
+#include <z6_process.h>
 
 #define MAIN_APP_SOCKET "/tmp/.z6_main.sock"
 class Z6ChartNplayers: public Z6Singleton<Z6ChartNplayers>{
@@ -32,5 +33,15 @@ class Z6MainSocketServer: public  Z6Singleton<Z6MainSocketServer>{
     public:
         Z6socket& get(){
             return server;
+        }
+}
+
+class Z6ProcessManager: public  Z6Singleton<Z6Process>{
+    friend class Z6Singleton<Z6Process>;
+    private:
+        Z6Process process;
+    public:
+        Z6Process& get(){
+            return process;
         }
 }

@@ -2,7 +2,7 @@ import os
 import json
 import sys
 
-def generate_cpp_from_schemas(schema_dir):
+def generate_cpp_from_schemas(schema_dir, srcfile):
     classes_code = []
     factory_cases = []
     forward_decl=[]
@@ -225,6 +225,8 @@ public:
 //forward declaration
 {'\n'.join(forward_decl)}
 
+"""
+    src_content = f"""#include <z6_json_code.h>
 {'\n'.join(classes_code)}
 
 class Z6jsonFactory {{
@@ -235,9 +237,10 @@ public:
     }}
 }};
 """
-    return header_content
+    with open(srcfile+".h", "w") as file:
+        file.write(header_content)
+    with open(srcfile+".cpp", "w") as file:
+        file.write(src_content)
 
 if len(sys.argv) > 2:
-    cpp_code = generate_cpp_from_schemas(sys.argv[1])
-    with open(sys.argv[2], "w") as file:
-        file.write(cpp_code)
+    cpp_code = generate_cpp_from_schemas(sys.argv[1], sys.argv[2])

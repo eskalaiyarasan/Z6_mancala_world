@@ -23,16 +23,14 @@ void Z6PrioritizedThreadPool::StandardWorkerLoop() {
 
             context = standard_queue_.front();
             standard_queue_.pop();
+            pipeline_.Process(context);
         }
 
-        // Execute pipeline service
-        pipeline_.Process(context);
     }
 }
 
 void Z6PrioritizedThreadPool::EmergencyWorkerLoop() {
     while (true) {
-        Z6PipelineContext *context, *shadow;
         {
             std::unique_lock<std::mutex> lock(emg_mtx_);
             // Dedicated emergency thread stays idle until signaled
@@ -40,13 +38,10 @@ void Z6PrioritizedThreadPool::EmergencyWorkerLoop() {
 
             if (stop_ && emergency_queue_.empty()) return;
 
-            context = emergency_queue_.front();
+            auto context = emergency_queue_.front();
             emergency_queue_.pop();
+            pipeline_.Process(context);
         }
-
-        std::cout << "[EMERGENCY THREAD] Processing high-priority task for ID: " << context->client_id << "\n";
-        pipeline_.Process(context);
-        delete shadow;
 
     }
 }
@@ -65,7 +60,7 @@ Z6PrioritizedThreadPool::Z6PrioritizedThreadPool(size_t standard_threads, size_t
     }
 }
 
-~Z6PrioritizedThreadPool() {
+Z6PrioritizedThreadPool::~Z6PrioritizedThreadPool() {
     {
         std::lock_guard<std::mutex> lock1(std_mtx_);
         std::lock_guard<std::mutex> lock2(emg_mtx_);
@@ -79,19 +74,21 @@ Z6PrioritizedThreadPool::Z6PrioritizedThreadPool(size_t standard_threads, size_t
 }
 
 
-void Z6PrioritizedThreadPool::Enqueue(Z6PipelineContext *context) {
+void Z6PrioritizedThreadPool::Enqueue(std::unique_ptr<Z6PipelineContext> context) {
     // Initial quick parse check to direct traffic before full pipeline stage execution
+    if(context == nullptr){return;}
+
     try {
     if (context->is_emergency) {
         {
             std::lock_guard<std::mutex> lock(emg_mtx_);
-            emergency_queue_.push(context);
+            emergency_queue_.push(std::move(context));
         }
         emg_cv_.notify_one(); // Wake up reserved critical worker
     } else {
         {
             std::lock_guard<std::mutex> lock(std_mtx_);
-            standard_queue_.push(context);
+            standard_queue_.push(std::move(context));
         }
         std_cv_.notify_one(); // Wake up standard worker
     }

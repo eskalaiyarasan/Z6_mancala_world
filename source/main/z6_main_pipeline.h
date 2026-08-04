@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include <storage/z6_storage.h>
-#include <pipeline/z6_pipeline.h>
+#include <z6_storage.h>
+#include <z6_pipeline.h>
 #include <string>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -45,19 +45,19 @@ class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
 class Z6ValidationStage : public Z6PipelineStage {
 
 public:
-   Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
+   std::unique_ptr<Z6PipelineContext>  Execute(std::unique_ptr<Z6PipelineContext>context) override;
 };
 class Z6WaitingStage : public Z6PipelineStage {
 private:
-    std::shared_ptr< Z6Storage<Z6ValidationPipelineContext> > local_;
+    std::shared_ptr< Z6Storage<std::unique_ptr<Z6ValidationPipelineContext> > > local_;
 public:
-    Z6WaitingStage(std::shared_ptr< Z6Storage<Z6ValidationPipelineContext> > st):local_(st){}
-   Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
+    Z6WaitingStage(std::shared_ptr< Z6Storage<std::unique_ptr<Z6ValidationPipelineContext> > > st):local_(st){}
+   std::unique_ptr<Z6PipelineContext>  Execute(std::unique_ptr<Z6PipelineContext>context) override;
 };
 class Z6PublishStage : public Z6PipelineStage {
 
 public:
-   Z6PipelineContext*  Execute(Z6PipelineContext *context) override;
+   std::unique_ptr<Z6PipelineContext>  Execute(std::unique_ptr<Z6PipelineContext>context) override;
 };
 
-Z6PipelineContext* new_main_pipelineContext(int fd , const char *data);
+std::unique_ptr<Z6PipelineContext> new_main_pipelineContext(int fd , const char *data);
