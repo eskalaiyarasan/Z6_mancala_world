@@ -13,7 +13,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-#define MAP_NPLAYERS_NAME   "/schema/z6_players_required.json"
+#define MAP_NPLAYERS_NAME   "/tmp/schema/z6_players_required.json"
 Z6ChartNplayers::Z6ChartNplayers()
 {
     std::ifstream file("data.json");

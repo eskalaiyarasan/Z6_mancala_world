@@ -6,7 +6,7 @@
   "$defs": {
     "Game": {
       "type": "object",
-      "required": ["NAME", "LEVEL"],
+      "required": ["Name", "Level"],
       "properties": {
         "schema_version": {
               "type": "integer",
@@ -27,8 +27,7 @@
         "Players": {
           "type": "array",
           "items": {
-            "type": "string",
-            "minimum": 0
+            "type": "string"
           }
         },
         "Human":{

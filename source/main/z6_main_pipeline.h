@@ -36,14 +36,21 @@ class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
         std::mutex mtx_;
     public:
         Z6WaitingPipelineContext(Z6ValidationPipelineContext *data);
-        std::string get() { return uuid_str_;}
+        std::string get() const{ return uuid_str_;}
 
         bool addme(Z6ValidationPipelineContext *c);
-
         bool publish();
         int count();
         bool erase();
         ~Z6WaitingPipelineContext(){}
+};
+class Z6PublishPipelineContext: public Z6PipelineContext{
+    private:
+        std::string key_;
+    public:
+        Z6PublishPipelineContext(int fd ,std::string &k);
+        std::string get_key(){return key_;}
+        ~Z6PublishPipelineContext(){}
 };
 class Z6ValidationStage : public Z6PipelineStage {
 
@@ -52,14 +59,17 @@ public:
 };
 class Z6WaitingStage : public Z6PipelineStage {
 private:
-    std::shared_ptr< Z6Storage<std::unique_ptr<Z6ValidationPipelineContext> > > local_;
+    std::shared_ptr< Z6Storage<std::unique_ptr<Z6WaitingPipelineContext> > > local_;
 public:
-    Z6WaitingStage(std::shared_ptr< Z6Storage<std::unique_ptr<Z6ValidationPipelineContext> > > st):local_(st){}
+    Z6WaitingStage(std::shared_ptr< Z6Storage<std::unique_ptr<Z6WaitingPipelineContext> > > st):local_(st){}
    std::unique_ptr<Z6PipelineContext>  Execute(std::unique_ptr<Z6PipelineContext>context) override;
+   bool processhuman(Z6ValidationPipelineContext *c , std::string &key1);
 };
 class Z6PublishStage : public Z6PipelineStage {
-
+private:
+        std::shared_ptr< Z6Storage<std::unique_ptr<Z6WaitingPipelineContext> > > local_;
 public:
+    Z6PublishStage(std::shared_ptr< Z6Storage<std::unique_ptr<Z6WaitingPipelineContext> > > st):local_(st){}
    std::unique_ptr<Z6PipelineContext>  Execute(std::unique_ptr<Z6PipelineContext>context) override;
 };
 

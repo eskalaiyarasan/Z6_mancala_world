@@ -14,15 +14,17 @@
 #include "z6_main_singleton.h"
 #include <stdexcept>
 #include <memory>
+#include <csignal>
 int main(){
+    signal(SIGPIPE, SIG_IGN);
     try {
         Z6ChartNplayers::getInstance();
         Z6ProcessManager::getInstance();
-        auto main_hash =std::make_shared< Z6Storage< std::unique_ptr <Z6ValidationPipelineContext> > >();
+        auto main_hash =std::make_shared< Z6Storage< std::unique_ptr <Z6WaitingPipelineContext> > >();
         Z6Pipeline pipeline;
         pipeline.AddStage(std::make_shared<Z6ValidationStage>());
         pipeline.AddStage(std::make_shared<Z6WaitingStage>(main_hash));
-        pipeline.AddStage(std::make_shared<Z6PublishStage>());
+        pipeline.AddStage(std::make_shared<Z6PublishStage>(main_hash));
 
         // Create thread pool: 4 standard workers, 1 reserved emergency worker
         auto thread_pool = std::make_shared<Z6PrioritizedThreadPool>(10, 1, pipeline);

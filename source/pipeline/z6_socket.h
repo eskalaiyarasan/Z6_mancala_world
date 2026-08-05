@@ -14,7 +14,6 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <errno.h>
-
 class Z6socket {
 private:
     std::string socket_path_;
@@ -67,10 +66,12 @@ private:
                     break; // Read all available data for now (Edge-triggered pattern)
                 }
                 // Real read error
+                std::cout <<"[SERVER] closing client bytes read error: "<<client_fd<<"\n";
                 CloseClient(client_fd);
                 break;
             } else if (bytes_read == 0) {
                 // EOF - Client disconnected
+                std::cout <<"[SERVER] closing client bytes read None: "<<client_fd<<"\n";
                 CloseClient(client_fd);
                 break;
             } else {
@@ -157,6 +158,7 @@ public:
                     // Data available or hangup on existing client connection
                     int client_fd = events[i].data.fd;
                     if (events[i].events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+                        std::cout <<"[SERVER] closing client : e-poll error: "<<client_fd<<":"<<events[i].events<<"\n";
                         CloseClient(client_fd);
                     } else if (events[i].events & EPOLLIN) {
                         HandleRead(client_fd);
@@ -190,6 +192,7 @@ public:
         if (written < 0) {
             std::cerr << "[Error] Failed to write to client fd " << client_fd << ": " << strerror(errno) << "\n";
         }
+        std::cout<<"written "<<formatted<<"\n";
     }
 
     // Explicitly close a client socket and remove it from epoll monitoring
