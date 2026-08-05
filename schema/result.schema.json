@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Result.schema.json",
+  "title": "Game result Schema",
+
+  "$defs": {
+    "Result": {
+      "type": "object",
+      "required": ["NAME", "LEVEL"],
+      "properties": {
+        "Report":{
+          "type":"string",
+          "enum":["Tie","Resigned", "Abandoned", "Result"]
+        },
+        "Players": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

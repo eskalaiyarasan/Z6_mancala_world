@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rules.schema.json",
+  "title": "Game rules Schema",
+
+  "$defs": {
+    "Rules": {
+      "type": "object",
+      "properties": {
+        "Sowing": {"type":"boolean"},
+        "Capture": {"type":"boolean"},
+        "Pasu": {"type":"boolean"},
+        "DoubleCapture": {"type":"boolean"},
+        "FreeCapture":{"type":"boolean"},
+        "RoundReset":{"type":"boolean"},
+        "KingsCapture":{"type":"boolean"},
+        "BlockedReturn": {"type":"boolean"},
+        "RoundDivident":{"type":"boolean"},
+        "GameEnded":{"type":"boolean"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
