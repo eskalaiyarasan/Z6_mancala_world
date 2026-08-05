@@ -21,7 +21,7 @@ private:
     int server_fd_;
     int epoll_fd_;
     bool is_running_;
-    std::mutex map_mtx_;
+    //std::mutex map_mtx_;
 
     void setNonBlocking(int fd) {
         int flags = fcntl(fd, F_GETFL, 0);
@@ -84,12 +84,12 @@ private:
     }
 
 public:
-    z6socket(std::string socket_path)
+    Z6socket(std::string socket_path)
         : socket_path_(std::move(socket_path)), server_fd_(-1), epoll_fd_(-1), is_running_(false), response_callback_(nullptr){
 
     }
 
-    ~z6socket() {
+    ~Z6socket() {
         Stop();
     }
 
@@ -198,7 +198,7 @@ public:
         epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, client_fd, nullptr);
         close(client_fd);
     }
-    void SetResponseCallback(std::function<void(int, const std::string&)> cb) {
+    void SetResponseCallback(std::function<void(int, const char *)> cb) {
         response_callback_ = cb;
     }
 };

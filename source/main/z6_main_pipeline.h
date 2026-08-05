@@ -14,10 +14,11 @@
 #include <z6_storage.h>
 #include <z6_pipeline.h>
 #include <string>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <semaphore.h>
-#include <sys/wait.h>
+#include <memory>
+#include <mutex>
+#include <cstring>
+#include <string>
+
 
 class Z6ValidationPipelineContext: public Z6PipelineContext{
     protected:
@@ -25,7 +26,8 @@ class Z6ValidationPipelineContext: public Z6PipelineContext{
     public:
         Z6ValidationPipelineContext(int fd ,const std::string &msg):Z6PipelineContext(fd),json_(msg){context_id=0;}
         Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others);
-        std::string get() {return json_;}
+        std::string get() const {return json_;}
+        ~Z6ValidationPipelineContext(){}
 };
 class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
     private:
@@ -41,6 +43,7 @@ class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
         bool publish();
         int count();
         bool erase();
+        ~Z6WaitingPipelineContext(){}
 };
 class Z6ValidationStage : public Z6PipelineStage {
 

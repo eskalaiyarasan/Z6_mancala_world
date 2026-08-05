@@ -11,13 +11,14 @@
 #include <z6_main_singleton.h>
 #include <fstream>
 #include <string>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 #define MAP_NPLAYERS_NAME   "/schema/z6_players_required.json"
 Z6ChartNplayers::Z6ChartNplayers()
 {
     std::ifstream file("data.json");
     if (!file.is_open()) {
         std::cerr << "Failed to open data.json\n";
-        return 1;
     }
     try {
             // 2. Parse the JSON file
@@ -42,3 +43,11 @@ Z6ChartNplayers::Z6ChartNplayers()
             std::cerr << "JSON parsing error: " << e.what() << '\n';
         }
 }
+
+ int Z6ChartNplayers::get(std::string name){
+     auto x = _store.find(name);
+     if( !x){
+         return -1;
+     }
+     return *x;
+ }

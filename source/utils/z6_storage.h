@@ -14,6 +14,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <mutex>
 
 
 template <typename TContext>
@@ -22,7 +23,7 @@ private:
          std::unordered_map<std::string , TContext> store_;
          std::mutex mtx_;
 public:
-    std::unique_ptr<TContext> find(const std::string& id ){
+    TContext* find(const std::string& id ){
         std::lock_guard<std::mutex> lock(mtx_);
         auto it = store_.find(id);
         if (it != store_.end()) {
@@ -32,7 +33,8 @@ public:
     }
     bool save(const std::string& key,  TContext data){
         std::lock_guard<std::mutex> lock(mtx_);
-        store_[std::string(key)] = data;
+        store_[std::string(key)] = std::move(data);
+        return true;
     }
     bool erase(const std::string& key){
         std::lock_guard<std::mutex> lock(mtx_);

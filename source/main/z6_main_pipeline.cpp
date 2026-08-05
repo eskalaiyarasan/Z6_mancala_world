@@ -11,10 +11,11 @@
 
 
 #include <z6_storage.h>
-#include <game.schema.h>
+#include <game_schema.h>
 #include <z6_main_pipeline.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json-schema.hpp>
+#include <z6_main_singleton.h>
 #include <fstream>
 #include <z6_uuid.h>
 
@@ -40,52 +41,69 @@ std::unique_ptr<Z6PipelineContext>  Z6ValidationStage::Execute(std::unique_ptr<Z
     return context;
 }
 
-std::unique_ptr<Z6PipelineContext>  Z6WaitingStage::Execute(std::unique_ptr<Z6PipelineContext>context) {
-    if(context->has_error>0){
+// source/main/z6_main_pipeline.cpp
+std::unique_ptr<Z6PipelineContext> Z6WaitingStage::Execute(std::unique_ptr<Z6PipelineContext> context) {
+    if(context->has_error > 0){
         return context;
     }
     Z6ValidationPipelineContext *c = (Z6ValidationPipelineContext *) context.get();
-    Z6GameJson  gamejson;
-    bool  human=false;
+    Z6GameJson gamejson;
+    bool human = false;
     int level;
     std::string name;
     gamejson.from_json( c->get() );
     gamejson.getHuman(human);
-    if(human){
-        if( gamejson.getName(name) && (gamejson.getLevel(level) ){
-            std::string key = name + key;
-            auto found = local_.find(key);
-            if ( !found ){
-                auto w = std::make_unique<Z6WaitingPipelineContext>(c);
-                w.get()->addme(c);
-                local_.save(key, w);
 
-            }else{
-                found->addme(c);
-                if( Z6ChartNplayers::getInstance().get(name) >= found.get()->count() ){
-                    local_.erase(key);
-                    return found;
-                }else{
-                    local_.save(key,found);
-                    return nullptr;
+    if(human){
+        if( gamejson.getName(name) && gamejson.getLevel(level) ){
+            // FIX: Avoid reusing 'key' during definition
+            std::string key = name + "_room";
+
+            // 'found' is now a pointer to std::unique_ptr<Z6ValidationPipelineContext>
+            auto found_ptr = local_->find(key);
+
+            if ( !found_ptr ){
+                // Create the waiting context
+                auto w = std::make_unique<Z6WaitingPipelineContext>(c);
+                w->addme(c);
+
+                // FIX: Upcast the smart pointer cleanly to Base type for storage
+                std::unique_ptr<Z6ValidationPipelineContext> base_w = std::move(w);
+                local_->save(key, std::move(base_w));
+            } else {
+                // FIX: Cast base pointer to the derived type to access addme() and count()
+                Z6WaitingPipelineContext* waiting_ctx = dynamic_cast<Z6WaitingPipelineContext*>(found_ptr->get());
+
+                if (waiting_ctx) {
+                    waiting_ctx->addme(c);
+                    if( Z6ChartNplayers::getInstance().get(name) >= waiting_ctx->count() ){
+                        local_->erase(key);
+                        // FIX: Move the smart pointer out of the storage map to return it
+                        return std::move(*found_ptr);
+                    } else {
+                        // Keep it in storage. The item is updated in place.
+                        return nullptr;
+                    }
                 }
             }
             return nullptr;
         }
-    }else{
+    } else {
        auto w = std::make_unique<Z6WaitingPipelineContext>(c);
-       w.get()->addme(c);
+       w->addme(c);
        return w;
     }
+    return context;
 }
 
 std::unique_ptr<Z6PipelineContext>  Z6PublishStage::Execute(std::unique_ptr<Z6PipelineContext>context) {
 
-    if((context == nullptr ) || (context.get()->has_error>0){
+    if((context == nullptr ) || (context.get()->has_error>0)){
         return context;
     }
-    context.get()->publish();
-    context.get()->erase();
+    Z6WaitingPipelineContext *c = (Z6WaitingPipelineContext *) context.get();
+    c->publish();
+    c->erase();
     return context;
 }
 
@@ -131,14 +149,13 @@ bool Z6WaitingPipelineContext::erase(){
     return true;
 }
 
-Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others){
-    json_ = others.get();
+Z6ValidationPipelineContext::Z6ValidationPipelineContext(const Z6ValidationPipelineContext& others):
+    Z6PipelineContext(others.get_client()), json_(others.get()){
     context_id = 0;
-    fd = others.get_client();
 }
 
 std::unique_ptr<Z6PipelineContext> new_main_pipelineContext(int fd , const char *data){
-    std:string data_str(data);
+    std::string data_str(data);
 
     return std::make_unique<Z6ValidationPipelineContext>(fd,data_str);
 }

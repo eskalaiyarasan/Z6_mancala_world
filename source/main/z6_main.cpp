@@ -9,10 +9,11 @@
  * Unauthorized copying, distribution, or use is strictly prohibited.
  */
 
+#include "z6_threadpool.h"
 #include "z6_main_pipeline.h"
 #include "z6_main_singleton.h"
 #include <stdexcept>
-
+#include <memory>
 int main(){
     try {
         Z6ChartNplayers::getInstance();

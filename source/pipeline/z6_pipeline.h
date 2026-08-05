@@ -35,7 +35,7 @@ class Z6PipelineContext{
         int has_error;
         int is_emergency;
         Z6PipelineContext(int fd):client_fd(fd),context_id(-1), has_error(0){}
-        int get_client(){return client_fd;}
+        int get_client() const {return client_fd;}
         virtual ~Z6PipelineContext()=0;
 };
 
