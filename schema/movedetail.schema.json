@@ -8,7 +8,8 @@
       "type": "object",
       "required": ["Pit"],
       "properties": {
-        "Pit":{"$ref": "pit.schema.json#/$defs/Pit"}
+        "Pit":{"$ref": "pit.schema.json#/$defs/Pit"},
+        "Rule":{"$ref": "rules.schema.json#/$defs/Rules"},
       },
       "additionalProperties": false
     }

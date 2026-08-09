@@ -1,3 +1,13 @@
+/**
+ * @file source/pipeline/z6_socket.h
+ * @author  kalaiyarasan S
+ * @date 2026-08-02
+ *
+ * @copyright Copyright (c) 2026. All rights reserved.
+ * This code and all associated intellectual property completely
+ * belong to the ZERASIX GAMING STUDIO LLP.
+ * Unauthorized copying, distribution, or use is strictly prohibited.
+ */
 #pragma once
 
 #include <iostream>
@@ -14,6 +24,8 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <z6_utils.h>
+
 class Z6socket {
 private:
     std::string socket_path_;
@@ -29,6 +41,7 @@ private:
     }
     // Callback to send response back to socket client
     std::function<void(int, const char *)> response_callback_;
+    std::function<void(int)> accept_callback_;
     void HandleAccept() {
         struct sockaddr_un cli_addr;
         socklen_t cli_len = sizeof(cli_addr);
@@ -55,6 +68,9 @@ private:
         }
 
         std::cout << "[Server] Accepted new client fd: " << client_fd << "\n";
+        if(accept_callback_){
+            accept_callback_(client_fd);
+        }
     }
 
     void HandleRead(int client_fd) {
@@ -86,7 +102,7 @@ private:
 
 public:
     Z6socket(std::string socket_path)
-        : socket_path_(std::move(socket_path)), server_fd_(-1), epoll_fd_(-1), is_running_(false), response_callback_(nullptr){
+        : socket_path_(std::move(socket_path)), server_fd_(-1), epoll_fd_(-1), is_running_(false), response_callback_(nullptr),accept_callback_(nullptr){
 
     }
 
@@ -114,7 +130,7 @@ public:
             throw std::runtime_error("Failed to bind UNIX domain socket.");
         }
 
-        if (listen(server_fd_, 128) < 0) {
+        if (listen(server_fd_, Z6NameSpace::nSocketClient) < 0) {
             close(server_fd_);
             throw std::runtime_error("Failed to listen on UNIX domain socket.");
         }
@@ -203,5 +219,8 @@ public:
     }
     void SetResponseCallback(std::function<void(int, const char *)> cb) {
         response_callback_ = cb;
+    }
+    void SetAcceptCallback(std::function<void(int)> cb) {
+        accept_callback_ = cb;
     }
 };

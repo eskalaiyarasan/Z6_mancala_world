@@ -37,7 +37,7 @@ class Z6WaitingPipelineContext: public Z6ValidationPipelineContext{
     public:
         Z6WaitingPipelineContext(Z6ValidationPipelineContext *data);
         std::string get() const{ return uuid_str_;}
-
+        std::string get_json() const { return json_;}
         bool addme(Z6ValidationPipelineContext *c);
         bool publish();
         int count();

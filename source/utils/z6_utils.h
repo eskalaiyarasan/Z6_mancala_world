@@ -1,5 +1,5 @@
 /**
- * @file source/singleton/singleton.h
+ * @file source/utils/z6_uuid.h
  * @author  kalaiyarasan S
  * @date 2026-08-01
  *
@@ -12,5 +12,18 @@
 #pragma once
 #include <uuid/uuid.h>
 #include <iostream>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
+
+
+
+namespace Z6NameSpace {
+    extern int nSocketClient;
+    extern int schema_version;
+};
 
 std::string  z6_uuid();
+std::string getISO8601Time();

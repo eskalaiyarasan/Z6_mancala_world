@@ -1,0 +1,47 @@
+/**
+ * @file source/algo/z6_algo_base.h
+ * @author  kalaiyarasan S
+ * @date 2026-08-01
+ *
+ * @copyright Copyright (c) 2026. All rights reserved.
+ * This code and all associated intellectual property completely
+ * belong to the ZERASIX GAMING STUDIO LLP.
+ * Unauthorized copying, distribution, or use is strictly prohibited.
+ */
+
+#include <z6_algo_base.h>
+#include <z6_algo_factory.h>
+#include <z6_indian_classic.h>
+
+
+namespace Z6EngineSpace {
+
+    // Define and initialize the const unordered_map
+    const std::unordered_map<std::string, GenericFunc> registry = {
+        {"INDIAN_CLASSIC_SURYA", Z6IndianClassicSurya::create},
+        {"INDIAN_CLASSIC_PRITHIV", Z6IndianClassicPrithiv::create}
+    };
+
+}
+
+std::unique_ptr<Z6Algo> Z6Algo::produce(const  Z6GameJson &game){
+    std::string name;
+    int level;
+    game.getName(name);
+    game.getLevel(level);
+
+    auto it = Z6EngineSpace::registry.find(name);
+    if(it != Z6EngineSpace::registry.end()){
+        return  it->second(level);
+    }
+    return std::make_unique<Z6Algo>();
+}
+
+bool jsonFactory_produce(const Z6GameJson &game , Z6RootJson &root, std::unique_ptr<Z6Algo>  &algo){
+    bool ret=false;
+    auto it = Z6Algo::produce(game);
+    if (it.is_unknown){ return false;}
+    root = it->init(game);
+    algo = std::move(it);
+    return true;
+}

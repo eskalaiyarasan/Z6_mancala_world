@@ -19,7 +19,7 @@
 #include <nlohmann/json-schema.hpp>
 #include <z6_main_singleton.h>
 #include <fstream>
-#include <z6_uuid.h>
+#include <z6_utils.h>
 #include <thread>
 #include <chrono>
 

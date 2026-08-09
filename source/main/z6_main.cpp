@@ -15,7 +15,10 @@
 #include <stdexcept>
 #include <memory>
 #include <csignal>
+#include <z6_utils.h>
+
 int main(){
+    Z6NameSpace::nSocketClient=64;
     signal(SIGPIPE, SIG_IGN);
     try {
         Z6ChartNplayers::getInstance();

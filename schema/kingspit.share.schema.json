@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kingspit.share.schema.json",
+  "title": "Game Schema",
+
+  "$defs": {
+    "KingsPitShare": {
+      "type": "object",
+      "properties": {
+        "Side": {
+          "type": "integer"
+        },
+        "Value": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

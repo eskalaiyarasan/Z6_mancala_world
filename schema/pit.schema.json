@@ -6,7 +6,7 @@
   "$defs": {
     "Pit": {
       "type": "object",
-      "required": ["Type","Enable", "Index","Value"],
+      "required": ["Type","Enable", "Index"],
       "properties": {
         "Enable":{
           "type":"boolean",
@@ -14,7 +14,7 @@
         },
         "Type": {
           "type":"string",
-          "enum":["NORMAL", "STORE","KINGS"],
+          "enum":["NORMAL", "STORE","KINGS", "HAND"],
           "default": "NORMAL"
         },
         "Index": {
@@ -32,11 +32,11 @@
         "Side":{
           "type":"integer"
         },
-        "Share":{
-          "type":"array",
+        "Share": {
+          "type": "array",
           "items": {
-              "type": "integer"
-            }
+            "$ref": "kingspit.shareschema.json#/$defs/KingsPitShare"
+          }
         },
         "Value": {
           "type":"integer",
@@ -51,7 +51,7 @@
             "properties": { "Type": { "const": "STORE" } }
           },
           "then": {
-            "required": ["Type", "Index", "Value", "Owner"]
+            "required": ["Type", "Index", "Owner"]
           }
         },
         {
@@ -59,7 +59,7 @@
             "properties": { "Type": { "const": "KINGS" } }
           },
           "then": {
-            "required": ["Type", "Index", "Value", "Share"]
+            "required": ["Type", "Index", "Share"]
           }
         }
       ],

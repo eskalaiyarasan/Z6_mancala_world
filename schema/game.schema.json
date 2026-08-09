@@ -14,8 +14,8 @@
             },
         "Name": {
           "type":"string",
-          "enum":["INDIAN_CLASSIC_SURYA ", "INDIAN_CLASSIC_DHARMA",
-            "INDIAN_KINGS_SURYA", "INDIAN_KINGS_DHARMA"],
+          "enum":["INDIAN_CLASSIC_SURYA ", "INDIAN_CLASSIC_PRITHIV",
+            "INDIAN_KINGS_SURYA", "INDIAN_KINGS_PRITHIV"],
           "default": "INDIAN_CLASSIC_SURYA"
         },
         "Level": {
