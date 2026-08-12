@@ -11,6 +11,11 @@
  #include "z6_utils.h"
 #include <chrono>
 #include <sstream>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>
+
  namespace Z6NameSpace {
      int nSocketClient = 2;
      int schema_version = 1;
@@ -34,4 +39,24 @@ std::string getISO8601Time(){
     std::stringstream ss;
     ss<<std::put_time(&utc_tm, "%Y-%m-%dT%H:%M:%SZ");
     return ss.str();
+}
+// Trim function accepting a const std::string& (or implicitly convertible string_view)
+std::string_view trim(const std::string& str) {
+    std::string_view sv(str);
+
+    // Trim leading spaces
+    auto start = std::find_if_not(sv.begin(), sv.end(), [](unsigned char c) {
+        return std::isspace(c);
+    });
+
+    // Trim trailing spaces
+    auto end = std::find_if_not(sv.rbegin(), sv.rend(), [](unsigned char c) {
+        return std::isspace(c);
+    }).base();
+
+    return (start < end) ? std::string_view(start, std::distance(start, end)) : std::string_view{};
+}
+bool compareStr(const std::string& s1, const std::string& s2)
+{
+    return trim(s1) == trim(s2);
 }

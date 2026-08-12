@@ -16,7 +16,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
-
+#include <string_view>
 
 
 
@@ -27,3 +27,5 @@ namespace Z6NameSpace {
 
 std::string  z6_uuid();
 std::string getISO8601Time();
+std::string_view trim(const std::string& str);
+bool compareStr(const std::string& s1, const std::string& s2);

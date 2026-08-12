@@ -6,7 +6,7 @@
   "$defs": {
     "BoardResp": {
       "type": "object",
-      "required": ["Nsides","Nseeds","Npits","Pits","Nround"],
+      "required": ["Nround", "Active","schema_version","Turn" ,"Type"],
       "properties": {
         "schema_version": {
               "type": "integer",
@@ -18,23 +18,9 @@
         "Turn":{
           "type":"integer"
         },
-        "Nsides": {
-          "type": "integer",
-          "minimum": 2, "maximum": 5, "default":2
-        },
-        "Nseeds": {
-          "type": "integer",
-          "minimum": 4, "maximum": 15, "default":4
-        },
-        "Npits": {
-          "type": "integer",
-          "minimum": 5, "maximum": 15, "default":7
-        },
-        "Pits":{
-          "type":"array",
-          "items": {
-            "$ref": "pit.schema.json#/$defs/Pit"
-          }
+        "Type":{
+          "type":"string",
+          "enum": ["ERROR", "OK","RESULT"]
         },
         "Nround": {
           "type": "integer",
@@ -55,6 +41,12 @@
           "items": {
             "$ref": "movedetail.schema.json#/$defs/Detail"
           }
+        },
+        "Result":{
+          "$ref": "result.schema.json/$defs/Result"
+        },
+        "Error":{
+          "$ref": "error.schema.json/$defs/Result"
         }
       },
       "additionalProperties": false

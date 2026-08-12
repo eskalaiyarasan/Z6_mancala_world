@@ -12,13 +12,63 @@
 #include <unordered_map>
 #include <utility>
 #include <z6_utils.h>
+class Z6IndianClassic_priv{
+    inline static const std::string visibility[]={
+        "TRANSPARENT","TRANSLUCENT","OPAQUE"
+    };
+  public:
+      int nSeeds;
+      int nPits;
+      int visible;
+      int pasu;
+      Z6RulesJson rule_;
+      inline const std::string& getVisible(){ return visibility[visible];}
+      Z6IndianClassic_priv(int s, int p , int i , int r , int a):
+        nSeeds(s), nPits(p),visible(i),pasu(a){
 
+            rule_.setSowing(true);
+            rule_.setCapture(true);
+            rule_.setRoundReset(true);
+            rule_.setFreeCapture(true);
+            if(r > 0){
+                rule_.setPasu(true);
+                rule_.setDoubleCapture(true);
+            }
+            if(visible > 2){
+                visible = 2;
+            }
+        }
+
+};
+
+static const  Z6IndianClassic_priv base[] = {
+
+    Z6IndianClassic_priv(4,5,0,0,0),
+    Z6IndianClassic_priv(6,7,0,1,4),
+    Z6IndianClassic_priv(12,7,0, 1,6),
+    Z6IndianClassic_priv(4,5,1,0,0),
+    Z6IndianClassic_priv(6,7,1, 1,4),
+    Z6IndianClassic_priv(12,7,1,1,6),
+    Z6IndianClassic_priv(4,5,2,0,0),
+    Z6IndianClassic_priv(6,7,2, 1,4),
+    Z6IndianClassic_priv(12,7,2,1,6)
+}
 void Z6IndianClassic::reset(){
     Z6PitJson hand;
     hand_ = hand;
     pits_.clear();
     max_index = now = pits_.end();
     store0 = store1 = now;
+    details.clear();
+}
+void Z6IndianClassic::update_hand(){
+    int value;
+    now->getValue(value);
+    now->setValue(0);
+    hand_.setValue(value);
+    Z6RuleJson rule;
+    update_detail(false , rule);
+
 }
 bool Z6IndianClassic::preset(Z6RootJson &root,int pit_index){
     Z6BoardJson board;
@@ -45,14 +95,13 @@ bool Z6IndianClassic::preset(Z6RootJson &root,int pit_index){
 
     if(ret){
         //check
-        int turn , n;
+        int turn ;
         int side;
         if( board.getTurn(turn) && (choice->getSide(side)) && (turn == side)){
             hand_ = *choice;
             hand_.setType("HAND");
-            choice->setValue(0);
-            board.getNpits(n);
             now = choice ;
+            update_hand()
         }else{
             ret = false;
         }
@@ -112,34 +161,16 @@ bool Z6IndianClassic::inc(){
 }
 
 Z6RootJson Z6IndianClassic::make(int level){
-    static const std::unordered_map<int, std::pair<int,int> > base = {
-        {1,{4,5}},
-        {2,{6,7}},
-        {3,{12,7}},
-        {4,{4,5}},
-        {5,{6,7}},
-        {6,{12,7}},
-        {7,{4,5}},
-        {8,{6,7}},
-        {9,{12,7}}
-    }
-    auto b =base[level];
+
+
     Z6BoardJson board;
     board.setActive(true);
     board.setTurn(0);
     board.setNsides(2);
-    board.setNseeds(b.first);
-    board.setNpits(b.second);
+    board.setNseeds(base[level].nSeeds);
+    board.setNpits(base[level].nPits);
     board.setNround(0);
-    std::string visible;
-    if (level < 4){
-        visible = "TRANSPARENT";
-    }else if(level < 7) {
-        visible = "TRANSLUCENT";
-    }else {
-        visible = "OPAQUE";
-    }
-    board.setVisibility(visible);
+    board.setVisibility(base[level].getVisible());
     std::string toss = "toss";
     Z6RootJson root;
     root.setschema_version(Z6NameSpace::schema_version);
@@ -149,11 +180,24 @@ Z6RootJson Z6IndianClassic::make(int level){
     root.setStatus(toss);
     return root;
 }
+void Z6IndianClassic::update_root(Z6RootJson &root , Z6MoveJson &m ){
 
-bool Z6IndianClassicSurya::move(Z6RootJson &json , const Z6MoveReqJson &req , Z6BoardRespJson &resp ){
+    std::vector<Z6MoveHistoryJson> val;
+    req.getMove(m);
+    Z6MoveHistoryJson history;
+    history.setMove(m);
+    history.setDetails(details);
+    board.getHistoryVector(val);
+    val.push_back(history);
+    board.setHistory(val);
+    board.setPits(pits_);
+    root.setBoard(board);
+}
+bool Z6IndianClassicSurya::move(Z6RootJson &root , const Z6MoveReqJson &req , Z6BoardRespJson &resp ){
     bool ret = true;
     reset();
     int pit_index = -1 , error_num = -1;
+    Z6MoveJson m;
     ret = req.getMove(m);
     if(ret) { ret = m.getIndex(pit_index);}
     if(ret){ ret = preset(json , pit_index); } else { error_num = 1;}
@@ -167,22 +211,31 @@ bool Z6IndianClassicSurya::move(Z6RootJson &json , const Z6MoveReqJson &req , Z6
         error_num = 3;
     }
     if(!ret){ return false;}
-    bool capture;
+
     while(!move_end){
+        old = now;
         now ++;
         std::string type="NORMAL";
         now.getType(type);
         if (type == "STORE"){
             now = max_index;
         }
-        if( ! inc()){
-
+         if( ! inc()){
+            int value;
+            update_hand();
+            hand_.getValue(value);
+            if(value == 0){ move_end = true;}
         }
     }
 
-
-
-
+    now++;
+    int side;
+    board.getTurn(side)
+    Z6RuleJson rule;
+    rule.setCapture(true);
+    capture(side , rule);
+    update_root(root,m)
+    frame_resp()
 
 }
 Z6RootJson Z6IndianClassicSurya::init(const  Z6GameJson &game){

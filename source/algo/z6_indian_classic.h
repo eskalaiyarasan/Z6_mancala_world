@@ -14,7 +14,9 @@
 #include <pit_schema.h>
 #include <root_schema.h>
 
+class Z6IndianRuleBook{
 
+};
 class Z6IndianClassic : Z6Algo{
     public:
         Z6IndianClassic(Z6AlgoEnums algo , int level):Z6Algo(algo ,level){}
@@ -33,9 +35,12 @@ class Z6IndianClassic : Z6Algo{
         bool capture(int side, Z6RuleJson &rule);
         bool inc();
         void update_detail(bool norule , Z6RuleJson &rule);
+        void update_hand();
+        void update_root(Z6RootJson &json,Z6MoveJson &m);
         Z6RootJson make(int level);
 
 };
+
 
 class Z6IndianClassicSurya: Z6IndianClassic{
 private:
