@@ -20,7 +20,7 @@ class Z6IndianRuleSurya: Z6IndianRuleBase{
 
         }
         std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) override;
-    static Z6IndianRuleSurya& single();
+    static Z6IndianRuleSurya& getInstance(int level=-1);
 };
 class Z6IndianRulePrithiv: Z6IndianRuleBase{
     public:
@@ -31,7 +31,7 @@ class Z6IndianRulePrithiv: Z6IndianRuleBase{
 
         }
         std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) override;
-    static Z6IndianRulePrithiv& single();
+    static Z6IndianRulePrithiv& getInstance(int level=-1);
 };
 
 class Z6IndianRuleSow: Z6IndianRuleBase{
@@ -98,15 +98,18 @@ class Z6IndianRuleCaptureX2: Z6IndianRulePasu{
 };
 
 
-class Z6IndianRuleRoundReset: Z6IndianRuleBase{
+class Z6IndianRuleRoundReset: Z6IndianRulePasu{
     private:
         Z6RuleJson rule_;
+        bool isGameEnded();
+        bool refillPits();
     public:
-    Z6IndianRuleRoundReset(const Z6IndianRuleBase& base):Z6IndianRuleBase(base){
+    Z6IndianRuleRoundReset(const Z6IndianRuleBase& base):Z6IndianRulePasu(base){
         rule_.setRoundReset(true);
     }
     ~Z6IndianRuleRoundReset(){
 
     }
     std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) override;
+
 };
