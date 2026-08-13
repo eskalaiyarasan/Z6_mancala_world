@@ -19,8 +19,8 @@ std::vector<Z6PitJson>::iterator Z6IndianRuleSurya::step(std::vector<Z6PitJson>:
         bool done=false;
         bool first = false;
         while(!done){
-            if(next == pits_.end()){
-                next = pits_.begin();
+            if(next == pits_->end()){
+                next = pits_->begin();
                 if(first){
                     error_=Z6IndianErrorEnums::ERROR_SOWING_NOT_POSSIBLE;
                     done = true;
@@ -41,7 +41,7 @@ std::vector<Z6PitJson>::iterator Z6IndianRuleSurya::step(std::vector<Z6PitJson>:
                 next ++;
             }
         }
-    return pits_.end();
+    return pits_->end();
 }
 
 std::vector<Z6PitJson>::iterator Z6IndianRulePrithiv::step(std::vector<Z6PitJson>::iterator now) {
@@ -51,8 +51,8 @@ std::vector<Z6PitJson>::iterator Z6IndianRulePrithiv::step(std::vector<Z6PitJson
         bool done=false;
         bool first = false;
         while(!done){
-            if(next == pits_.begin()){
-                next = pits_.end();
+            if(next == pits_->begin()){
+                next = pits_->end();
                 next --;
                 if(first){
                     error_=Z6IndianErrorEnums::ERROR_SOWING_NOT_POSSIBLE;
@@ -74,7 +74,7 @@ std::vector<Z6PitJson>::iterator Z6IndianRulePrithiv::step(std::vector<Z6PitJson
                 next --;
             }
         }
-    return pits_.end();
+    return pits_->end();
 }
 
 std::vector<Z6PitJson>::iterator Z6IndianRuleSow::step(std::vector<Z6PitJson>::iterator now){
@@ -95,9 +95,9 @@ std::vector<Z6PitJson>::iterator Z6IndianRuleSow::step(std::vector<Z6PitJson>::i
 }
 
 bool Z6IndianRuleCapture::preset(){
-    auto next = pits_.begin();
+    auto next = pits_->begin();
     capture_flag = false;
-    while(next != pits_.end()){
+    while(next != pits_->end()){
         std::string type;
         next->getType(type);
         if( compareStr(type, "STORE") ){
@@ -151,13 +151,13 @@ std::vector<Z6PitJson>::iterator Z6IndianRuleCapture::step(std::vector<Z6PitJson
     }
 }
  bool Z6IndianRulePasu::preset(){
-     old_= prev_=pits_.end();
+     old_= prev_=pits_->end();
      return Z6IndianRuleCapture::preset();
  }
 
 std::vector<Z6PitJson>::iterator Z6IndianRulePasu::step(std::vector<Z6PitJson>::iterator now){
     if(stop_) { return now;}
-    if(old_ != pits_.end()){
+    if(old_ != pits_->end()){
         int value, side;
         old_->getValue(value);
         if(value == pasu_){
@@ -178,7 +178,7 @@ std::vector<Z6PitJson>::iterator Z6IndianRuleCaptureX2::step(std::vector<Z6PitJs
     if(stop_){ return now;}
     now->getValue(seed_in_pit);
     hand_->getValue(seed_in_hand);
-    if(old_ != pits_.end() && capture_flag){
+    if(old_ != pits_->end() && capture_flag){
         int value, side;
         old_->getValue(value);
         if( (value == pasu_) &&(seed_in_pit > 0)){
@@ -222,7 +222,7 @@ bool Z6IndianRuleRoundReset::isGameEnded(){
     bool ret = false;
     Z6RuleJson rule = rule_;
     rule_.setFreeCapture(true);
-    for(const auto it=pits_.begin(); it != pits_.end(); it ++){
+    for(const auto it=pits_->begin(); it != pits_->end(); it ++){
         it->getType(type);
         if( compareStr(type, "NORMAL")){
             it->getSide(side);
@@ -266,9 +266,6 @@ bool Z6IndianRuleRoundReset::refillPits(){
     return true;
 }
 
-Z6IndianRuleSurya& Z6IndianRuleSurya::getInstance(int level){
-
-}
-Z6IndianRulePrithiv& Z6IndianRulePrithiv::getInstance(int level){
+Z6IndianRuleBase* Z6IndianRuleBase::factory(int level){
 
 }

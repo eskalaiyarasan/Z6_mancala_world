@@ -9,6 +9,8 @@
 * Unauthorized copying, distribution, or use is strictly prohibited.
 */
 #pragma once
+
+#define Z6_SCHEMA_VERSION   1
 class Z6json {
    public:
        virtual ~Z6json() = default;

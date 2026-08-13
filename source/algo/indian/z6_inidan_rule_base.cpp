@@ -21,7 +21,9 @@ bool Z6IndianRuleBase::initial_check(std::vector<Z6PitJson>::iterator now){
     int side;
     std::sting pit_type;
     error_= Z6IndianErrorEnums::ERROR_NO_ERROR ;
-    if(now >= pits_.end() || now< pits_.begin()){
+    if(pits_ = nullptr) {return Z6IndianErrorEnums::ERROR_PIT_NOT_EXIST;}
+
+    if(now >= pits_->end() || now< pits_->begin()){
         error_ = Z6IndianErrorEnums::ERROR_PIT_NOT_EXIST;
     }
     if((turn >=2) || (now->getSide(side) == false){
@@ -95,5 +97,5 @@ bool Z6IndianRuleBase::update_pits_reference(std::vector<Z6PitJson> &pits){
     if(valid_child_){
         child_.update_pits_reference(pits);
     }
-    pits_ = pits;
+    pits_ = &pits;
 }

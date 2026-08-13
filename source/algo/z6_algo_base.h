@@ -43,7 +43,7 @@ class Z6Algo{
         Z6Algo(Z6AlgoEnums algo , int level):level_(level), algo_(algo){}
         ~Z6Algo();
         bool is_unknown() const { return (level_ == Z6AlgoEnums::UNKNOWN)}
-        virtual bool move(Z6RootJson &json , const Z6MoveReqJson &req , Z6BoardRespJson &resp )=0;
+        virtual bool move(Z6RootJson &root , const Z6MoveReqJson &req , Z6BoardRespJson &resp )=0;
         static std::unique_ptr<Z6Algo> produce(Z6GameJson &game);
         virtual Z6RootJson init(const  Z6GameJson &game) = 0;
 };

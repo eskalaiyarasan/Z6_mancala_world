@@ -26,12 +26,16 @@ enum class Z6IndianErrorEnums {
     ERROR_SOWING_NOT_POSSIBLE = 6,
     ERROR_UNKNOWN_ERROR,
 };
+enum class Z6IndianGameType {
+    INDIAN_GAME_SURYA = 1,
+    INDIAN_GAME_PRITHIV = 2;
+};
 class Z6IndianRuleBase{
     private:
         bool valid_child_;
     protected:
         Z6PitJson *hand_;
-        std::vector<Z6PitJson> &pits_;
+        std::vector<Z6PitJson> *pits_;
         const Z6IndianRuleBase &child_;
         std::vector<Z6DetailJson> &details_;
         bool &roundup_;
@@ -45,10 +49,11 @@ class Z6IndianRuleBase{
         void update_detail(std::vector<Z6PitJson>::iterator now);
         void update_detail(std::vector<Z6PitJson>::iterator now, Z6RuleJson &rule);
         bool update_pits_reference(std::vector<Z6PitJson> &pits);
-        Z6IndianRuleBase():valid_child_(false){}
+        Z6IndianRuleBase():valid_child_(false),pits_(nullptr){}
     public:
         Z6IndianRuleBase(const Z6IndianRuleBase& other);
         virtual std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) = 0;
         bool apply(std::vector<Z6PitJson> &pits,int side, int pitindex);
         vitual ~Z6IndianRuleBase(){}
+        static Z6IndianRuleBase* factory(Z6IndianGameType type, int level){ return nullptr}
 };
