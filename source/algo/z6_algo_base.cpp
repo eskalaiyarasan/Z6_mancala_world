@@ -14,15 +14,6 @@
 #include <z6_indian_classic.h>
 
 
-namespace Z6EngineSpace {
-
-    // Define and initialize the const unordered_map
-    const std::unordered_map<std::string, GenericFunc> registry = {
-        {"INDIAN_CLASSIC_SURYA", Z6IndianClassicSurya::create},
-        {"INDIAN_CLASSIC_PRITHIV", Z6IndianClassicPrithiv::create}
-    };
-
-}
 
 std::unique_ptr<Z6Algo> Z6Algo::produce(const  Z6GameJson &game){
     std::string name;
@@ -30,17 +21,19 @@ std::unique_ptr<Z6Algo> Z6Algo::produce(const  Z6GameJson &game){
     game.getName(name);
     game.getLevel(level);
 
-    auto it = Z6EngineSpace::registry.find(name);
-    if(it != Z6EngineSpace::registry.end()){
-        return  it->second(level);
+    if(compareStr(name, "INDIAN_CLASSIC_SURYA")){
+        return std::make_unique<Z6IndianClassicSurya>(level);
     }
-    return std::make_unique<Z6Algo>();
+    if(compareStr(name , "INMDIAN_CLASSIC_PRITHIV")){
+        return std::make_unique<Z6IndianClassicPrithiv>(level);
+    }
+    return nullptr;
 }
 
 bool jsonFactory_produce(const Z6GameJson &game , Z6RootJson &root, std::unique_ptr<Z6Algo>  &algo){
     bool ret=false;
     auto it = Z6Algo::produce(game);
-    if (it.is_unknown){ return false;}
+    if (it && it.is_unknown){ return false;}
     root = it->init(game);
     algo = std::move(it);
     return true;

@@ -75,6 +75,7 @@ Z6IndianGameModeClassic::Z6IndianGameModeClassic(int level):Z6IndianGameModeBase
         pits_.push_back(_make_pit_store(side,index,"NORMAL",seeds_per_pit_));
     }
     index++;
+    mode_ = Z6IndianGameModeBase::INDIAN_CLASSIC_MODE;
     pits_.push_back(_make_pit_store(side,index,"STORE", 0));
 }
 Z6RootJson Z6IndianGameModeClassic::generate(Z6GameJson &game){

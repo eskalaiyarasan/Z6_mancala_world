@@ -16,6 +16,7 @@
 #include <z6_utils.h>
 #include <pit_schema.h>
 #include <root_schema.h>
+#include <z6_indian_game_mode.h>
 
 enum class Z6IndianErrorEnums {
     ERROR_NO_ERROR = 0,
@@ -49,11 +50,11 @@ class Z6IndianRuleBase{
         void update_detail(std::vector<Z6PitJson>::iterator now);
         void update_detail(std::vector<Z6PitJson>::iterator now, Z6RuleJson &rule);
         bool update_pits_reference(std::vector<Z6PitJson> &pits);
-        Z6IndianRuleBase():valid_child_(false),pits_(nullptr){}
+        Z6IndianRuleBase(Z6IndianGameModeBase *p);
     public:
         Z6IndianRuleBase(const Z6IndianRuleBase& other);
         virtual std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) = 0;
         bool apply(std::vector<Z6PitJson> &pits,int side, int pitindex);
         vitual ~Z6IndianRuleBase(){}
-        static Z6IndianRuleBase* factory(Z6IndianGameType type, int level){ return nullptr}
+        static Z6IndianRuleBase* factory( Z6IndianGameModeBase *m){ return nullptr}
 };

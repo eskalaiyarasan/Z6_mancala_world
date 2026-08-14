@@ -37,7 +37,7 @@ Z6RootJson Z6IndianClassic::init(const  Z6GameJson &game){
 
 Z6IndianClassicSurya::Z6IndianClassicSurya(int level):Z6IndianClassic(INDIAN_CLASSIC_SURYA, level){
     mode_ = Z6IndianGameModeBase::factory(level,Z6IndianGameModeENUM::INDIAN_CLASSIC_MODE);
-    auto  surya = Z6IndianRuleBase::factory(Z6IndianGameType::INDIAN_GAME_SURYA , level);
+    auto  surya = Z6IndianRuleBase::factory(Z6IndianGameType::INDIAN_GAME_SURYA , level, mode_);
     if(mode->pasu_rule_){
         //No pasu rule, no double capture
         base_ = new Z6IndianRuleRoundReset(mode->seeds_per_pit_,
