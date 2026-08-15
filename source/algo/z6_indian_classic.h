@@ -23,6 +23,8 @@ protected:
     Z6IndianGameModeBase *mode_;
     bool valid_base_;
      Z6IndianClassic(Z6AlgoEnums algo , int level):Z6Algo(algo,level),valid_base_(false), mode(nullptr){}
+    Z6BoardRespJson frame_error_response(Z6BoardJson board ,Z6IndianErrorEnums error);
+    bool update_response(Z6BoardJson board ,Z6MoveJson move,std::vector<Z6DetailJson>& detail , Z6BoardRespJson &resp );
 public:
     bool move(Z6RootJson &root , const Z6MoveReqJson &req , Z6BoardRespJson &resp ) override;
     Z6RootJson init(const  Z6GameJson &game) override;

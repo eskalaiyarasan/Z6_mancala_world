@@ -6,7 +6,7 @@
   "$defs": {
     "Result": {
       "type": "object",
-      "required": ["NAME", "LEVEL"],
+      "required": ["Report"],
       "properties": {
         "Report":{
           "type":"string",

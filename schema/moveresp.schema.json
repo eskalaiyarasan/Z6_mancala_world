@@ -6,7 +6,7 @@
   "$defs": {
     "BoardResp": {
       "type": "object",
-      "required": ["Nround", "Active","schema_version","Turn" ,"Type"],
+      "required": ["schema_version", "GameID", "Type", "Sequence"],
       "properties": {
         "schema_version": {
               "type": "integer",
@@ -14,6 +14,10 @@
             },
         "Active":{
           "type":"boolean", "default":true
+        },
+        "GameID": {
+          "type": "string",
+          "format": "uuid"
         },
         "Turn":{
           "type":"integer"
@@ -25,6 +29,11 @@
         "Nround": {
           "type": "integer",
           "minimum": 1,  "default":1
+        },
+        "Sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The move number (0, 1, 2...)"
         },
         "Visibility":{
           "type":"string","default":"TRANSPARENT",

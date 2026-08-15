@@ -8,14 +8,23 @@
  * belong to the ZERASIX GAMING STUDIO LLP.
  * Unauthorized copying, distribution, or use is strictly prohibited.
  */
+#include "z6_indian_rules.h"
 #include <iostream>
 #include <z6_indian_rule_base.h>
+#include <z6_indian_game_mode.h>
 
 Z6IndianRuleBase::Z6IndianRuleBase(const Z6IndianRuleBase &other):
     hand_(other.hand_), pits_(other.pits_),
     child_(other),roundup_(other_.roun),
     details_(other.details_),gameover_(other.gameover_),
     turn_(other.turn_),stop_(other.stop_),error_(other.error_):valid_child_(true) {}
+
+Z6IndianRuleBase::Z6IndianRuleBase(Z6IndianGameModeBase *p):
+    hand_(*(new Z6PitJson())),pits_(&(p->pits_)),roundup_(p->roundup_),
+    details_(p->details_),gameover_(p->gameover_),
+    turn_(p->turn_),stop_(p->stop_),error_(p->error_),valid_child_(false){
+
+    }
 
 bool Z6IndianRuleBase::initial_check(std::vector<Z6PitJson>::iterator now){
     int side;
@@ -99,3 +108,12 @@ bool Z6IndianRuleBase::update_pits_reference(std::vector<Z6PitJson> &pits){
     }
     pits_ = &pits;
 }
+
+ Z6IndianRuleBase* Z6IndianRuleBase::factory(Z6IndianGameType type,  , Z6IndianGameModeBase *m){
+     if(type == Z6IndianGameType::INDIAN_GAME_SURYA){
+         return new Z6IndianRuleSurya(m)
+     }else if (type == Z6IndianGameType::INDIAN_GAME_PRITHIV){
+         return new Z6IndianRulePrithiv(m);
+     }
+     return nullptr;
+ }

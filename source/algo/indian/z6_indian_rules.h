@@ -19,7 +19,7 @@ class Z6IndianRuleSurya: Z6IndianRuleBase{
         ~Z6IndianRuleSurya(){
 
         }
-        Z6IndianRuleSurya(){}
+        Z6IndianRuleSurya(Z6IndianGameModeBase *m):Z6IndianRuleBase(m){}
         std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) override;
 };
 class Z6IndianRulePrithiv: Z6IndianRuleBase{
@@ -30,7 +30,7 @@ class Z6IndianRulePrithiv: Z6IndianRuleBase{
         ~Z6IndianRulePrithiv(){
 
         }
-        Z6IndianRulePrithiv(){}
+        Z6IndianRulePrithiv(Z6IndianGameModeBase *m):Z6IndianRuleBase(m){}
         std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) override;
 };
 
