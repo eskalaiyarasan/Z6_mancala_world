@@ -55,6 +55,9 @@ class Z6IndianRuleBase{
         Z6IndianRuleBase(const Z6IndianRuleBase& other);
         virtual std::vector<Z6PitJson>::iterator step(std::vector<Z6PitJson>::iterator now) = 0;
         bool apply(std::vector<Z6PitJson> &pits,int side, int pitindex);
-        vitual ~Z6IndianRuleBase(){}
+        virtual ~Z6IndianRuleBase(){}
         static Z6IndianRuleBase* factory( Z6IndianGameModeBase *m){ return nullptr}
+        bool get_roundup()const { return roundup_;}
+        Z6IndianErrorEnums get_error() const { return error_;}
+        bool isGameover()const { return gameover_;}
 };

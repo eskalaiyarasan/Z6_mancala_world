@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "error.schema.json",
+  "title": "Game Error Schema",
+
+  "$defs": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "Not_your_turn": {"type":"boolean"},
+        "Beyond_boundary": {"type":"boolean"},
+        "Chosen_invalid_pit": {"type":"boolean"},
+        "Pit_not_exist": {"type":"boolean"},
+        "Sowing_not_possible":{"type":"boolean"},
+        "Unknown_condition":{"type":"boolean"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
