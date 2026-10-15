@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_soloud: ^5.2.1
+  hexagon: ^0.2.0
+  liquid_bottle: ^0.0.7
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:
