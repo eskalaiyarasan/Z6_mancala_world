@@ -41,7 +41,7 @@ class Z6ThemeSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children[
+      children: [
           Text('Select Your Game Theme'),
           DropdownMenu<Z6Theme>(
             initialSelection: Provider.of<Z6ThemeProvider>(context, listen: false).currentTheme.theme,

@@ -53,7 +53,10 @@ class _RootHomeScreenState extends State<RootHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current theme background color using Provider[cite: 2, 3]
+    final backgroundColor = Provider.of<Z6ThemeProvider>(context).currentTheme.color?.bg;
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
