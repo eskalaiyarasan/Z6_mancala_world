@@ -53,19 +53,24 @@ class Z6SpeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<Z6Delay>(
-      initialSelection: speed,
-      dropdownMenuEntries: const <DropdownMenuEntry<Z6Delay>>[
-        DropdownMenuEntry(value: Z6Delay.Z6xIMMEDIATE, label: 'Super Fast'),
-        DropdownMenuEntry(value: Z6Delay.Z6xFAST, label: 'Fast'),
-        DropdownMenuEntry(value: Z6Delay.Z6xMEDIUM, label: 'Normal'),
-        DropdownMenuEntry(value: Z6Delay.Z6xSLOW, label: 'Slow'),
-      ],
-      onSelected: (newSpeed) {
-        onSpeedChanged(newSpeed);
-      },
-      label: const Text('Select Animation Speed'),
+    return Row(
+      children: [ 
+        Text("Select the Animation speed"),
+        DropdownMenu<Z6Delay>(
+          initialSelection: speed,
+          dropdownMenuEntries: const <DropdownMenuEntry<Z6Delay>>[
+            DropdownMenuEntry(value: Z6Delay.Z6xIMMEDIATE, label: 'Super Fast'),
+            DropdownMenuEntry(value: Z6Delay.Z6xFAST, label: 'Fast'),
+            DropdownMenuEntry(value: Z6Delay.Z6xMEDIUM, label: 'Normal'),
+            DropdownMenuEntry(value: Z6Delay.Z6xSLOW, label: 'Slow'),
+            ],
+          onSelected: (newSpeed) {
+            onSpeedChanged(newSpeed);
+          },
+        ),
+      ]
     );
+
   }
 }
 

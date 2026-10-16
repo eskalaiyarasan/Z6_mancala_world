@@ -40,15 +40,19 @@ class Z6ThemeSelectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<Z6Theme>(
-      initialSelection: Provider.of<Z6ThemeProvider>(context, listen: false).currentTheme.theme,
-      dropdownMenuEntries: const <DropdownMenuEntry<Z6Theme>>[
-        DropdownMenuEntry(value: Z6Theme.Honeycomb, label: 'HoneyComb Theme'),
-      ],
-      onSelected: (theme) {
-        onThemeChanged(theme);
-      },
-      label: const Text('Select Your Game Theme'),
+    return Row(
+      children[
+          Text('Select Your Game Theme'),
+          DropdownMenu<Z6Theme>(
+            initialSelection: Provider.of<Z6ThemeProvider>(context, listen: false).currentTheme.theme,
+            dropdownMenuEntries: const <DropdownMenuEntry<Z6Theme>>[
+                DropdownMenuEntry(value: Z6Theme.Honeycomb, label: 'HoneyComb Theme'),
+            ],
+            onSelected: (theme) {
+              onThemeChanged(theme);
+            },
+          )
+      ]
     );
   }
 }
