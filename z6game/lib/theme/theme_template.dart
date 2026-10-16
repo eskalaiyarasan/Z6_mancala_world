@@ -13,18 +13,20 @@
 /// material is strictly forbidden unless prior written permission is obtained 
 /// from Zerasix Gaming Studio LLP.
 import 'package:flutter/material.dart';
-import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 enum Z6Theme { Honeycomb, Aqua }
 enum Z6PitType { General, Master, Store }
 
 class Z6ThemeSound {
-  AudioSource? drop;
-  AudioSource? scoop;
-  AudioSource? capture;
-  AudioSource? win;
-  AudioSource? lose;
-  AudioSource? other; 
+  String? drop;
+  String? scoop;
+  String? capture;
+  String? win;
+  String? lose;
+  String? other; 
+// Singleton player instance to play SFX easily
+  static final AudioPlayer _player = AudioPlayer();
 
   Z6ThemeSound({
     this.drop, 
@@ -35,47 +37,15 @@ class Z6ThemeSound {
     this.other,
   }); 
 
-  static Future<Z6ThemeSound> fromPaths({
-    required String dropPath,
-    required String scoopPath,
-    required String capturePath,
-    required String winPath,
-    required String losePath,
-    required String otherPath,
-  }) async {
-    final results = await Future.wait([
-      SoLoud.instance.loadAsset(dropPath, autoDispose: false),
-      SoLoud.instance.loadAsset(scoopPath, autoDispose: false),
-      SoLoud.instance.loadAsset(capturePath, autoDispose: false),
-      SoLoud.instance.loadAsset(winPath, autoDispose: false),
-      SoLoud.instance.loadAsset(losePath, autoDispose: false),
-      SoLoud.instance.loadAsset(otherPath, autoDispose: false),
-    ]);
 
-    return Z6ThemeSound(
-      drop: results[0],
-      scoop: results[1],
-      capture: results[2],
-      win: results[3],
-      lose: results[4],
-      other: results[5],
-    );
-  }
-
-  Future<void> playDrop() async { if (drop != null) SoLoud.instance.play(drop!); }
-  Future<void> playScoop() async { if (scoop != null) SoLoud.instance.play(scoop!); }
-  Future<void> playCapture() async { if (capture != null) SoLoud.instance.play(capture!); }
-  Future<void> playWin() async { if (win != null) SoLoud.instance.play(win!); }
-  Future<void> playLose() async { if (lose != null) SoLoud.instance.play(lose!); }
-  Future<void> playOther() async { if (other != null) SoLoud.instance.play(other!); }
+  Future<void> playDrop() async { if (drop != null) await _player.play(AssetSource(drop!)); }
+  Future<void> playScoop() async { if (scoop != null) await _player.play(AssetSource(scoop!)); }
+  Future<void> playCapture() async { if (capture != null) await _player.play(AssetSource(capture!)); }
+  Future<void> playWin() async { if (win != null) await _player.play(AssetSource(win!)); }
+  Future<void> playLose() async { if (lose != null) await _player.play(AssetSource(lose!)); }
+  Future<void> playOther() async { if (other != null) await _player.play(AssetSource(other!)); }
 
   void dispose() {
-    if (drop != null) SoLoud.instance.disposeSource(drop!);
-    if (scoop != null) SoLoud.instance.disposeSource(scoop!);
-    if (capture != null) SoLoud.instance.disposeSource(capture!);
-    if (win != null) SoLoud.instance.disposeSource(win!);
-    if (lose != null) SoLoud.instance.disposeSource(lose!);
-    if (other != null) SoLoud.instance.disposeSource(other!);
   }
 }
 
