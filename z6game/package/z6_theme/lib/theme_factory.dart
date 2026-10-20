@@ -1,9 +1,9 @@
-
 /// 
 /// Project: Z6 Mancala World
 /// File: theme_template.dart
 /// Author:  Kalaiyarasan
 /// Date:  13/10/2026
+/// Package:  Z6Theme
 /// 
 /// Notice: All information contained herein is, and remains the property of 
 /// Zerasix Gaming Studio LLP. The intellectual and technical concepts contained 

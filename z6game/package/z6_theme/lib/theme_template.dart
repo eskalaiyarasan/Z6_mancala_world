@@ -4,6 +4,7 @@
 /// File: theme_template.dart
 /// Author:  Kalaiyarasan
 /// Date:  13/10/2026
+/// Package:  Z6Theme
 /// 
 /// Notice: All information contained herein is, and remains the property of 
 /// Zerasix Gaming Studio LLP. The intellectual and technical concepts contained 
@@ -17,8 +18,10 @@ import 'package:audioplayers/audioplayers.dart';
 
 enum Z6Theme { Honeycomb, Aqua }
 enum Z6PitType { General, Master, Store }
+enum Z6Delay { Z6xIMMEDIATE, Z6xFAST, Z6xMEDIUM, Z6xSLOW }
 
 class Z6ThemeSound {
+  bool? mute = false;
   String? drop;
   String? scoop;
   String? capture;
@@ -36,14 +39,20 @@ class Z6ThemeSound {
     this.lose,  
     this.other,
   }); 
+   
+  Future<void> _play_sound(String s) async {
+      if ( (s != null) && (!mute)){
+        await _player.play(AssetSource(s!)); 
+      }
+  }
+          
 
-
-  Future<void> playDrop() async { if (drop != null) await _player.play(AssetSource(drop!)); }
-  Future<void> playScoop() async { if (scoop != null) await _player.play(AssetSource(scoop!)); }
-  Future<void> playCapture() async { if (capture != null) await _player.play(AssetSource(capture!)); }
-  Future<void> playWin() async { if (win != null) await _player.play(AssetSource(win!)); }
-  Future<void> playLose() async { if (lose != null) await _player.play(AssetSource(lose!)); }
-  Future<void> playOther() async { if (other != null) await _player.play(AssetSource(other!)); }
+  Future<void> playDrop() async { _play_sound(drop); }
+  Future<void> playScoop() async { _play_sound(scoop); }
+  Future<void> playCapture() async { _play_sound(capture); }
+  Future<void> playWin() async { _play_sound(win); }
+  Future<void> playLose() async { _play_sound(lose); }
+  Future<void> playOther() async { _play_sound(other); }
 
   void dispose() {
   }
@@ -91,6 +100,26 @@ class Z6ThemeTemplate {
   });
 }
 
+class Z6Speed {
+  bool mute = false;
+  Z6Delay _delay = Z6Delay.Z6xMEDIUM; 
+
+  bool get isMuted => mute;
+  int get speed {
+    return switch (_delay) {
+      Z6Delay.Z6xIMMEDIATE => 1,   
+      Z6Delay.Z6xFAST      => 100,
+      Z6Delay.Z6xMEDIUM    => 600,
+      Z6Delay.Z6xSLOW      => 1200,
+      _                    => 800,
+    };
+  }
+
+  void setParam(Z6Delay delay, bool mm) {
+    mute = mm;
+    _delay = delay;
+  } 
+}
 abstract class Z6ThemeBlueprint {
   Z6ThemeTemplate generate();
 }

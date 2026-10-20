@@ -115,12 +115,12 @@ class Z6HoneyBottle extends StatelessWidget {
 class Z6Honeycomb implements Z6ThemeBlueprint {
   @override
   Z6ThemeTemplate generate() {
-    Z6ThemeSound sound = Z6ThemeSound(drop: 'assert/sounds/bee_drop.mp3',
-                        scoop: 'assert/sounds/bee_scoop.mp3',
-                        capture: 'assert/sounds/bee_capture.mp3',
-                        win: 'assert/sounds/bee_win.mp3',
-                        lose: 'assert/sounds/bee_lose.mp3',
-                        other: 'assert/sounds/bee_other.mp3',
+    Z6ThemeSound sound = Z6ThemeSound(drop: 'assets/sounds/bee_drop.mp3',
+                        scoop: 'assets/sounds/bee_scoop.mp3',
+                        capture: 'assets/sounds/bee_capture.mp3',
+                        win: 'assets/sounds/bee_win.mp3',
+                        lose: 'assets/sounds/bee_lose.mp3',
+                        other: 'assets/sounds/bee_other.mp3',
                         );
     Z6ThemePit pit = Z6ThemePit(
       normal: Z6HoneycombWorkerCell(0), 
