@@ -131,8 +131,8 @@ class Z6Honeycomb implements Z6ThemeBlueprint {
     Z6ThemeColor color = Z6ThemeColor(
       bg: Colors.yellow, 
       text: honeyText,
-      empty: Colors.yellow, 
-      fill: Colors.amber,
+      empty: Colors.grey.shade300, 
+      fill: Colors.deepOrange.shade200,
     );
                
     return Z6ThemeTemplate(

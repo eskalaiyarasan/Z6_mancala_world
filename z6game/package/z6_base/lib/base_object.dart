@@ -41,14 +41,16 @@ class Z6Pit{
       return x;
     }
     int reset(int data){
+      int ret = data; 
       if(data >= resetvalue){
         value = resetvalue;
         active = true;
+        ret = data - value;
       } else {
           value = -1;
           active = false;
       }
-      return value;
+      return ret;
     }
     
 }
