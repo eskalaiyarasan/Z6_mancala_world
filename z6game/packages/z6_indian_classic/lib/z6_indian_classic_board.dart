@@ -139,7 +139,8 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
           ],
         ),
       ),
-      body: Row(
+      body: SingleChildScrollView(
+        child:  Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: !_engine.ended
             ? [
@@ -175,7 +176,7 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
                   ],
                 ),
               ],
-      ),
+      )),
     );
   }
 }

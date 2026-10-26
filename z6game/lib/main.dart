@@ -52,26 +52,31 @@ class RootHomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor, // Background color updates automatically[cite: 1, 2, 3]
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          padding:  EdgeInsets.all(16.0),
           children: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Z6SettingScreen()),
-                );
-              },
-              child:  Text('Setting'),
-            ), 
-            TextButton(
-              onPressed: () {
+            ListTile(
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Z6IndianClassicPage()),
                 );
               },
-              child: Text('NewGame Z6-Indian-Classic'),
+              title:  Text('Z6-Indian-Classic'),
+              trailing:  Icon(Icons.arrow_forward_ios, size: 16),
+              leading: Text( '🇮🇳', style: TextStyle(fontSize: 24), // Adjust size to match standard icons
+              ),
+            ), 
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Z6SettingScreen()),
+                );
+              },
+              title: Text('Settings'),
+              trailing:  Icon(Icons.arrow_forward_ios, size: 16),
+              leading:  Icon(Icons.settings),
             ),
             
           ],

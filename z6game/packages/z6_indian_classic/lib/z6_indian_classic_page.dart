@@ -5,12 +5,42 @@ import 'package:flutter/material.dart';
 import 'z6_indian_classic_ai.dart';
 import 'z6_indian_classic_human.dart';
 
+class Z6TempContainer extends StatelessWidget {
+  final String value;
+  final VoidCallback callbk;
+
+  Z6TempContainer(this.value , this.callbk,{super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+                  margin: const EdgeInsets.only(bottom: 12.0), // Spacing between items
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(color: Colors.blue, width: 1),
+                      ),
+                  child: TextButton(
+                      onPressed: () {
+                        callbk();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Z6IndianClassicAI(level: 1)),
+                          );
+                      },
+                      child:Text(value),
+                    ),
+                );
+    }
+}
+
+
 class Z6IndianClassicPage extends StatelessWidget {
    Z6IndianClassicPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('New Game')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -18,33 +48,33 @@ class Z6IndianClassicPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('NewGame : play with Bot '),
-                TextButton(
-                  onPressed: () {
+                Text('Play with Bot '),
+                Z6TempContainer(
+                  'Easy',
+                  () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicAI(level: 1)),
                     );
                   },
-                  child:Text('Easy'),
                 ),
-                TextButton(
-                  onPressed: () {
+                Z6TempContainer(
+                  'Medium',
+                  () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicAI(level: 2)),
                     );
                   },
-                  child: Text('Medium'),
                 ),
-                TextButton(
-                  onPressed: () {
+                Z6TempContainer(
+                  'Hard',
+                  () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicAI(level: 3)),
                     );
                   },
-                  child: Text('Hard'),
                 ),
               ],
             ),
@@ -52,33 +82,33 @@ class Z6IndianClassicPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('NewGame : play with Human'),
-                TextButton(
-                  onPressed: () {
+                const Text('Play with Human'),
+                Z6TempContainer(
+                  'Easy',
+                  () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicHuman(level: 1)),
                     );
                   },
-                  child: Text('Easy'),
                 ),
-                TextButton(
-                  onPressed: () {
+                Z6TempContainer(
+                  'Medium',
+                   () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicHuman(level: 2)),
                     );
                   },
-                  child: Text('Medium'),
                 ),
-                TextButton(
-                  onPressed: () {
+                Z6TempContainer(
+                  'Hard',
+                  () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Z6IndianClassicHuman(level: 3)),
                     );
                   },
-                  child: Text('Hard'),
                 ),
               ],
             ),
