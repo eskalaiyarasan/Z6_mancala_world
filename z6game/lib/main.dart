@@ -16,24 +16,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'setting_page.dart';
-import 'theme/theme_selection_widget.dart';
+import 'package:z6_theme/theme_selection_widget.dart';
+import 'package:z6_indian_classic/z6_indian_classic_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+   MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Z6SettingProvider()),
         ChangeNotifierProvider(create: (_) => Z6ThemeProvider()),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         title: 'Z6 Mancala World',
         home: RootHomeScreen(),
       ),
@@ -42,7 +42,7 @@ class MainApp extends StatelessWidget {
 }
 
 class RootHomeScreen extends StatelessWidget {
-  const RootHomeScreen({super.key});
+  RootHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +59,21 @@ class RootHomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Z6SettingScreen()),
+                  MaterialPageRoute(builder: (context) => Z6SettingScreen()),
                 );
               },
-              child: const Text('Setting'),
+              child:  Text('Setting'),
+            ), 
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Z6IndianClassicPage()),
+                );
+              },
+              child: Text('NewGame Z6-Indian-Classic'),
             ),
+            
           ],
         ),
       ),

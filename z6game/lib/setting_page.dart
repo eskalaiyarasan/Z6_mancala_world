@@ -14,10 +14,8 @@
 /// from Zerasix Gaming Studio LLP.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:z6_theme:theme/theme_selection_widget.dart';
-import 'package:z6_theme:theme/theme_template.dart';
-
-
+import 'package:z6_theme/theme_selection_widget.dart';
+import 'package:z6_theme/theme_template.dart';
 class Z6SettingScreen extends StatefulWidget {
   const Z6SettingScreen({super.key});
 

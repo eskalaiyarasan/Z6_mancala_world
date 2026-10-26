@@ -10,9 +10,11 @@ dependencies:
   audioplayers: ^6.8.1
   flutter:
     sdk: flutter
-  hexagon: ^0.2.0
-  liquid_bottle: ^0.0.7
   provider: ^6.1.5+1
+  z6_theme:
+    path: packages/z6_theme
+  z6_indian_classic:
+    path: packages/z6_indian_classic
 
 dev_dependencies:
   flutter_test:
