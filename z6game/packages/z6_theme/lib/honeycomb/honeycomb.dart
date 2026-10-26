@@ -102,12 +102,16 @@ class Z6HoneyBottle extends StatelessWidget {
     final int clampedValue = number.clamp(0, 200);
     final double progress = clampedValue / 200.0;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(number.toString(), style: honeyText)),
-      body: LiquidBottleSlider(
-        bottleType: BottleType.standards.first,
-        value: progress,
-      ),
+    return SizedBox(
+      height: 100,
+      child: Stack( 
+        children: [
+          LiquidBottleSlider(
+            bottleType: BottleType.standards.first,
+            value: progress,
+          ),
+          Text(number.toString(), style: honeyText),
+        ]),
     );
   }
 }
@@ -120,7 +124,7 @@ class Z6HoneycombCell implements Z6ThemePit {
       return Z6HoneycombQueenCell(v); 
   }
   Widget store(int v){
-      return Z6HoneycombWorkerCell(0); 
+      return Z6HoneyBottle(0); 
   } 
   Widget inactive(){
       return Z6HoneycombGhostCell();

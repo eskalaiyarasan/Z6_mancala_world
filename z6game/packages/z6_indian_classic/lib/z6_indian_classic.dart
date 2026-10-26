@@ -14,7 +14,7 @@ class Z6IndianClassicPit extends StatefulWidget {
   final bool initialActive;
   final Function(int pitIndex)? onPitTap;
 
-  const Z6IndianClassicPit({
+   Z6IndianClassicPit({
     super.key,
     required this.index,
     required this.initialValue,
@@ -94,7 +94,7 @@ class Z6IndianClassicPitState extends State<Z6IndianClassicPit> {
 class Z6IndianClassicStore extends StatelessWidget {
   final Z6Store storeModel;
 
-  const Z6IndianClassicStore({super.key, required this.storeModel});
+   Z6IndianClassicStore({super.key, required this.storeModel});
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class Z6IndianClassicSide extends StatelessWidget {
   final bool isTurn;
   final Function(int index) onPitTapped;
 
-  const Z6IndianClassicSide({
+   Z6IndianClassicSide({
     super.key,
     required this.sideModel,
     required this.isTurn,
@@ -121,12 +121,9 @@ class Z6IndianClassicSide extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<Z6ThemeProvider>(context).currentTheme;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Side ${sideModel.side}", style: theme.color?.text ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
+    return Center(
+      child: Container(
+        padding:  EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isTurn ? theme.color?.empty : theme.color?.fill,          
           borderRadius: BorderRadius.circular(20), 
@@ -138,6 +135,7 @@ class Z6IndianClassicSide extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+           // Text("Side ${sideModel.side}", style: theme.color?.text ),
             for (var pit in sideModel.pits)
               Z6IndianClassicPit(
                 index: pit.index,
