@@ -82,13 +82,13 @@ class Z6ThemeColor {
     
 class Z6ThemeTemplate {
   Z6ThemeSound? sound;
-  Z6ThemePit? pit;
+  Z6ThemePit pit;
   Z6Theme? theme;
   Z6ThemeColor? color;  
   
   Z6ThemeTemplate({
     this.sound, 
-    this.pit,
+    required this.pit,
     this.theme, 
     this.color,
   });

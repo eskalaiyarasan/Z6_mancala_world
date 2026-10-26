@@ -136,7 +136,6 @@ class Z6Honeycomb implements Z6ThemeBlueprint {
                         lose: 'assets/sounds/bee_lose.mp3',
                         other: 'assets/sounds/bee_other.mp3',
                         );
-    Z6HoneycombCell pit; 
     Z6ThemeColor color = Z6ThemeColor(
       bg: Colors.yellow, 
       text: honeyText,
@@ -146,7 +145,7 @@ class Z6Honeycomb implements Z6ThemeBlueprint {
                
     return Z6ThemeTemplate(
       sound: sound, 
-      pit: pit, 
+      pit: Z6HoneycombCell(), 
       theme: Z6Theme.Honeycomb, 
       color: color,
     );

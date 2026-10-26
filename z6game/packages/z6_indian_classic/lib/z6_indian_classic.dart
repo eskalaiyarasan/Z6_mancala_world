@@ -100,7 +100,7 @@ class Z6IndianClassicStore extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<Z6ThemeProvider>(context).currentTheme;
     return Center(
-      child: theme.pit.store(storeModel.value) ?? Container(),
+      child: theme.pit.store(storeModel.value),
     );
   }
 }
