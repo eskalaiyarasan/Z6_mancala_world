@@ -56,14 +56,14 @@ class Z6SpeedScreen extends StatelessWidget {
 class Z6ThemeProvider extends ChangeNotifier {
   // Default starting theme
   Z6ThemeTemplate _currentTheme = Z6ThemeFactory.produce(Z6Theme.Honeycomb); 
-  Z6Speed _currentSpeed = Z6Delay.Z6xMEDIUM;
+  Z6Speed _currentSpeed = Z6Speed();  //Z6Delay.Z6xMEDIUM;
   Z6ThemeTemplate get currentTheme => _currentTheme;
   Z6Speed get currentSpeed => _currentSpeed;
 
   void setTheme(Z6Theme theme , bool mute , Z6Delay delay) {
     _currentTheme = Z6ThemeFactory.produce(theme);
     _currentSpeed.setParam(mute, delay);
-    _currentTheme.sound.mute = mute;
+    _currentTheme.sound?.mute = mute;
     notifyListeners(); // Tells all listening widgets to rebuild automatically
   }
 }

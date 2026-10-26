@@ -111,7 +111,21 @@ class Z6HoneyBottle extends StatelessWidget {
     );
   }
 }
-
+class Z6HoneycombCell implements Z6ThemePit {
+  Z6HoneycombCell();
+  Widget normal(int v){
+      return Z6HoneycombWorkerCell(v);
+  } 
+  Widget special(int v){
+      return Z6HoneycombQueenCell(v); 
+  }
+  Widget store(int v){
+      return Z6HoneycombWorkerCell(0); 
+  } 
+  Widget inactive(){
+      return Z6HoneycombGhostCell();
+  }
+}
 class Z6Honeycomb implements Z6ThemeBlueprint {
   @override
   Z6ThemeTemplate generate() {
@@ -122,12 +136,7 @@ class Z6Honeycomb implements Z6ThemeBlueprint {
                         lose: 'assets/sounds/bee_lose.mp3',
                         other: 'assets/sounds/bee_other.mp3',
                         );
-    Z6ThemePit pit = Z6ThemePit(
-      normal: Z6HoneycombWorkerCell(0), 
-      special: Z6HoneycombQueenCell(0), 
-      store: Z6HoneycombWorkerCell(0), 
-      inactive: Z6HoneycombGhostCell(),
-    ); 
+    Z6HoneycombCell pit; 
     Z6ThemeColor color = Z6ThemeColor(
       bg: Colors.yellow, 
       text: honeyText,

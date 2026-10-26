@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:z6_theme/theme_template.dart';
 import 'z6_indian_classic_engine.dart';
 import 'z6_indian_classic.dart';
+import 'package:z6_theme/theme_selection_widget.dart';
   
 class Z6IndianClassicBoard extends StatefulWidget {
   final int level;
@@ -77,16 +78,18 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
       _engine.history.add("${_engine.sequence}: ($sideIndex, $index)");
     });
 
-    if (widget.onPitTappedCallback != null) {
-      widget.onPitTapped!(sideIndex, index);
-    }
 
     while (!_engine.captured) {
       hand = _engine.sow(sideIndex, hand, index % _engine.n);
-      await theme.sound.playDrop();
+      await theme.sound?.playDrop();
       sideIndex = (sideIndex + 1) % 2;
       index = 0;
     }
+
+
+    setState(() {
+      _engine.nextTurn();
+    });
 
     if (_engine.checkValidPits(_engine.turn)) {
       _engine.roundTransit();
@@ -99,15 +102,11 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
       }
     }
 
-    setState(() {
-      _engine.nextTurn();
-    });
-
     if (widget.onTurnChanged != null) {
       widget.onTurnChanged!(_engine.turn);
     }
 
-    await theme.sound.playScoop();
+    await theme.sound?.playScoop();
   }
 
   @override
@@ -116,7 +115,7 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Z6 Indian Classic Level ${widget.level}", style: theme.color?.text ?? Colors.black),
+        title: Text("Z6 Indian Classic Level ${widget.level}", style: theme.color?.text ),
       ),
       drawer: Drawer(
         child: ListView(
@@ -124,7 +123,7 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(color: theme.color?.fill ?? Colors.blue),
-              child: Text("Round: ${_engine.currentRound}", style: theme.color?.text ?? Colors.black),
+              child: Text("Round: ${_engine.currentRound}", style: theme.color?.text ),
             ),
             ExpansionTile(
               leading: const Icon(Icons.history),

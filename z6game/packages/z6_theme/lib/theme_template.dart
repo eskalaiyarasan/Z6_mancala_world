@@ -40,36 +40,30 @@ class Z6ThemeSound {
     this.other,
   }); 
    
-  Future<void> _play_sound(String s) async {
-      if ( (s != null) && (!mute)){
+  Future<void> _play_sound(String? s) async {
+      bool isMuted = mute ?? false;
+      if ( (s != null) && (!isMuted)){
         await _player.play(AssetSource(s!)); 
       }
   }
           
 
-  Future<void> playDrop() async { _play_sound(drop); }
-  Future<void> playScoop() async { _play_sound(scoop); }
-  Future<void> playCapture() async { _play_sound(capture); }
-  Future<void> playWin() async { _play_sound(win); }
-  Future<void> playLose() async { _play_sound(lose); }
-  Future<void> playOther() async { _play_sound(other); }
+  Future<void> playDrop() async { await _play_sound(drop); }
+  Future<void> playScoop() async { await _play_sound(scoop); }
+  Future<void> playCapture() async { await _play_sound(capture); }
+  Future<void> playWin() async { await _play_sound(win); }
+  Future<void> playLose() async { await _play_sound(lose); }
+  Future<void> playOther() async { await _play_sound(other); }
 
   void dispose() {
   }
 }
 
-class Z6ThemePit {
-  Widget? normal;
-  Widget? special;
-  Widget? store;
-  Widget? inactive;
-
-  Z6ThemePit({
-    this.normal, 
-    this.special,
-    this.store, 
-    this.inactive,
-  });
+abstract class Z6ThemePit {
+  Widget normal(int value);
+  Widget special(int value);
+  Widget store(int value);
+  Widget inactive();
 }
 
 class Z6ThemeColor {
@@ -101,9 +95,12 @@ class Z6ThemeTemplate {
 }
 
 class Z6Speed {
-  bool mute = false;
-  Z6Delay _delay = Z6Delay.Z6xMEDIUM; 
-
+  bool mute = false; 
+  Z6Delay _delay = Z6Delay.Z6xMEDIUM;  
+  Z6Speed(){
+    mute = false;
+    _delay = Z6Delay.Z6xMEDIUM; 
+  }
   bool get isMuted => mute;
   int get speed {
     return switch (_delay) {
@@ -115,7 +112,7 @@ class Z6Speed {
     };
   }
 
-  void setParam(Z6Delay delay, bool mm) {
+  void setParam( bool mm, Z6Delay delay) {
     mute = mm;
     _delay = delay;
   } 

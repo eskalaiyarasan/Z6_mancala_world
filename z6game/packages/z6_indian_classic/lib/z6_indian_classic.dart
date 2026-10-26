@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:z6_theme/theme_template.dart';
 import 'base_object.dart';
+import 'package:z6_theme/theme_selection_widget.dart';
 
 class Z6IndianClassicPit extends StatefulWidget {
   final int index;
@@ -69,8 +70,8 @@ class Z6IndianClassicPitState extends State<Z6IndianClassicPit> {
       children: [
         Center(
           child: _pitModel.active 
-              ? theme.pit.normal(_pitModel.value) ?? Container() 
-              : theme.pit.inactive() ?? Container(),
+              ? theme.pit.normal(_pitModel.value)  
+              : theme.pit.inactive(),
         ),
         Positioned.fill(
           child: Material(
@@ -122,7 +123,7 @@ class Z6IndianClassicSide extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Side ${sideModel.side}", style: theme.color?.text ?? Colors.black),
+        title: Text("Side ${sideModel.side}", style: theme.color?.text ),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
