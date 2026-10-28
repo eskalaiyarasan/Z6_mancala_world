@@ -12,8 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   hexagon: ^0.2.0
-  liquid_bottle: ^0.0.7
   provider: ^6.1.5+1
+  z6_pot:
+    path: ../z6_pot
 
 dev_dependencies:
   flutter_test:

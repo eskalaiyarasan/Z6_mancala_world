@@ -31,22 +31,22 @@ class _Z6IndianClassicTossState extends State<Z6IndianClassicToss> {
   }
 
   void _executeToss() {
-    setState(() => _isTossing = true);
     Future.delayed(const Duration(seconds: 1), () {
-      final random = Random();
-      final winner = random.nextBool() ? widget.player1 : widget.player2;
+      if (!mounted) return;
+      //final random = Random();
+      //final winner = random.nextBool() ? widget.player1 : widget.player2;
+      final winner = widget.player1;
       setState(() {
         _isTossing = false;
         _tossWinner = winner;
       });
-      widget.onTossComplete(winner);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Tossing for First Turn..."),
+      title: const Text("Tossing for First Turn"),
       content: SizedBox(
         height: 100,
         child: Center(
@@ -61,8 +61,13 @@ class _Z6IndianClassicTossState extends State<Z6IndianClassicToss> {
       ),
       actions: [
         if (!_isTossing)
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+          ElevatedButton(
+            onPressed: () {
+              if (_tossWinner != null) {
+                widget.onTossComplete(_tossWinner!);
+              }
+              Navigator.of(context).pop();
+            },
             child: const Text("Start Game"),
           ),
       ],

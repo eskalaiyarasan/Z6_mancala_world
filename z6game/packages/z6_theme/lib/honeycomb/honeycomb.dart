@@ -15,7 +15,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import '../theme_template.dart';
-import 'package:liquid_bottle/liquid_bottle.dart';
+import 'package:z6_pot/z6_pot.dart';
 
 const TextStyle honeyText = TextStyle(
   fontFamily: 'Fredoka', 
@@ -95,24 +95,18 @@ class Z6HoneycombQueenCell extends StatelessWidget {
 
 class Z6HoneyBottle extends StatelessWidget {
   final int number;
-  const Z6HoneyBottle(this.number, {super.key});
+  final int side;
+  const Z6HoneyBottle(this.side ,this.number, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final int clampedValue = number.clamp(0, 200);
-    final double progress = clampedValue / 200.0;
 
-    return SizedBox(
-      height: 100,
-      child: Stack( 
-        children: [
-          LiquidBottleSlider(
-            bottleType: BottleType.standards.first,
-            value: progress,
-          ),
-          Text(number.toString(), style: honeyText),
-        ]),
-    );
+    return IndianPot(
+     size: Size(180,150),
+     contentLabel: number.toString(),
+     ownerName: "Store $side",
+    ); 
+     
   }
 }
 class Z6HoneycombCell implements Z6ThemePit {
