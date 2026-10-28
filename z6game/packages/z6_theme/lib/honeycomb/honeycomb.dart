@@ -14,8 +14,8 @@
 /// from Zerasix Gaming Studio LLP.
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
+import 'z6_pot.dart';
 import '../theme_template.dart';
-import 'package:z6_pot/z6_pot.dart';
 
 const TextStyle honeyText = TextStyle(
   fontFamily: 'Fredoka', 
@@ -95,8 +95,7 @@ class Z6HoneycombQueenCell extends StatelessWidget {
 
 class Z6HoneyBottle extends StatelessWidget {
   final int number;
-  final int side;
-  const Z6HoneyBottle(this.side ,this.number, {super.key});
+  const Z6HoneyBottle(this.number, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +103,7 @@ class Z6HoneyBottle extends StatelessWidget {
     return IndianPot(
      size: Size(180,150),
      contentLabel: number.toString(),
-     ownerName: "Store $side",
+     ownerName: "Store",
     ); 
      
   }
