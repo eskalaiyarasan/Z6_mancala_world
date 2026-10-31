@@ -2,19 +2,15 @@
 /// File: z6_indian_classic_toss.dart
 
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class Z6IndianClassicToss extends StatefulWidget {
-  final String player1;
-  final String player2;
-  final Function(String winner) onTossComplete;
+import 'engine_interface.dart';
 
-  const Z6IndianClassicToss({
-    super.key,
-    required this.player1,
-    required this.player2,
-    required this.onTossComplete,
-  });
+class Z6IndianClassicToss extends StatefulWidget {
+  final String id;
+
+  const Z6IndianClassicToss({super.key, required this.id});
 
   @override
   State<Z6IndianClassicToss> createState() => _Z6IndianClassicTossState();
@@ -33,9 +29,9 @@ class _Z6IndianClassicTossState extends State<Z6IndianClassicToss> {
   void _executeToss() {
     Future.delayed(const Duration(seconds: 1), () {
       if (!mounted) return;
-      //final random = Random();
-      //final winner = random.nextBool() ? widget.player1 : widget.player2;
-      final winner = widget.player1;
+      final random = Random();
+      var engine = Z6IndianClassicInterface.get(widget.id);
+      final winner = random.nextBool() ? engine?.player1 : engine?.player2;
       setState(() {
         _isTossing = false;
         _tossWinner = winner;
@@ -54,7 +50,10 @@ class _Z6IndianClassicTossState extends State<Z6IndianClassicToss> {
               ? const CircularProgressIndicator()
               : Text(
                   "$_tossWinner won the toss!",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
         ),
@@ -64,7 +63,7 @@ class _Z6IndianClassicTossState extends State<Z6IndianClassicToss> {
           ElevatedButton(
             onPressed: () {
               if (_tossWinner != null) {
-                widget.onTossComplete(_tossWinner!);
+                Z6IndianClassicInterface.start(widget.id, _tossWinner ?? "AI");
               }
               Navigator.of(context).pop();
             },

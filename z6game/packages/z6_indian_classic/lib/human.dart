@@ -2,8 +2,11 @@
 /// File: z6_indian_classic_human.dart
 
 import 'package:flutter/material.dart';
-import 'z6_indian_classic_board.dart';
-import 'z6_indian_classic_toss.dart';
+
+import 'board.dart';
+import 'toss.dart';
+import 'engine.dart';
+import 'engine_interface.dart';
 
 class Z6IndianClassicHuman extends StatefulWidget {
   final int level;
@@ -22,11 +25,15 @@ class Z6IndianClassicHuman extends StatefulWidget {
 }
 
 class _Z6IndianClassicHumanState extends State<Z6IndianClassicHuman> {
-  final GlobalKey<Z6IndianClassicBoardState> _boardKey = GlobalKey<Z6IndianClassicBoardState>();
-
+  late String id;
   @override
   void initState() {
     super.initState();
+    id = Z6IndianClassicInterface.create(
+      widget.level,
+      widget.player1,
+      widget.player2,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _showTossDialog());
   }
 
@@ -34,25 +41,18 @@ class _Z6IndianClassicHumanState extends State<Z6IndianClassicHuman> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Z6IndianClassicToss(
-        player1: widget.player1,
-        player2: widget.player2,
-        onTossComplete: (winner) async {
-          await _boardKey.currentState?.start(winner);
-        },
-      ),
+      builder: (context) => Z6IndianClassicToss(id: id),
     );
   }
 
   @override
+  void dispose() {
+    Z6IndianClassicInterface.destroy(id);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Z6IndianClassicBoard(
-        key: _boardKey,
-        level: widget.level,
-        player1: widget.player1,
-        player2: widget.player2,
-      ),
-    );
+    return Scaffold(body: Z6IndianClassicBoard(id: id, side: 0, both: true));
   }
 }

@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'setting_page.dart';
 import 'package:z6_theme/theme_selection_widget.dart';
-import 'package:z6_indian_classic/z6_indian_classic_page.dart';
+import 'package:z6_indian_classic/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

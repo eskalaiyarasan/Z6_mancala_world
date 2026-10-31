@@ -3,11 +3,11 @@
 
 class Z6Pit {
   int index;
-  int value; 
+  int value;
   int side;
   bool active;
   late int resetvalue;
-        
+
   Z6Pit({
     required this.index,
     required this.value,
@@ -22,7 +22,7 @@ class Z6Pit {
   }
 
   int scoop() {
-    int x = -1; 
+    int x = -1;
     if (active) {
       x = value;
       value = 0;
@@ -31,7 +31,7 @@ class Z6Pit {
   }
 
   int reset(int data) {
-    int ret = data; 
+    int ret = data;
     if (data >= resetvalue) {
       value = resetvalue;
       active = true;
@@ -65,7 +65,7 @@ class Z6SideModel {
   int m;
   Z6Store store;
   bool turn;
-  late List<Z6Pit> pits;    
+  late List<Z6Pit> pits;
 
   Z6SideModel({
     required this.side,
@@ -76,13 +76,52 @@ class Z6SideModel {
   }) : store = store ?? Z6Store(side: side) {
     // Index starts from (side * n) and increments sequentially for each pit
     pits = List.generate(
-      n, 
-      (i) => Z6Pit(
-        index: (side * n) + i,
-        value: m,
-        active: true,
-        side: side,
-      ),
+      n,
+      (i) => Z6Pit(index: (side * n) + i, value: m, active: true, side: side),
     );
+  }
+}
+
+enum Z6ActionType {
+  init,
+  drop,
+  scoop,
+  capture,
+  pasu,
+  capture2x,
+  abrupt,
+  capture0x,
+  ghost,
+  store,
+  roundup,
+  finish,
+}
+
+class Z6Action {
+  int side;
+  String index;
+  int value;
+  Z6ActionType act;
+  static const String store = "STORE";
+  static const String all = "_";
+  Z6Action({
+    required this.side,
+    required this.index,
+    required this.value,
+    Z6ActionType? act,
+  }) : act = act ?? Z6ActionType.drop;
+}
+
+class Z6MoveSummary {
+  late List<Z6Action> action;
+  Z6MoveSummary() {
+    action = [];
+  }
+  void add(int sidev, String indexv, int v, Z6ActionType actv) {
+    action.add(Z6Action(side: sidev, index: indexv, act: actv, value: v));
+  }
+
+  void reset() {
+    action.clear();
   }
 }
