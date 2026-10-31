@@ -258,7 +258,10 @@ class Z6IndianClassicEngine {
     int hand = 0;
     _moveSummary.reset();
     history.add("( $sideIndex , $index )");
+    int b = 0;
     while (captureFlag == false) {
+      b++;
+      print('\@Z6IndianClassicEngine -> \@move: $b/ $j');
       if (j >= n) {
         sideIndex = (sideIndex + 1) % Z;
         j = 0;
@@ -288,6 +291,7 @@ class Z6IndianClassicEngine {
           capture2x = false;
         }
       }
+      j++;
       if (pasuFlag) {
         pasuFlag = false;
         collectPasu(sideIndex);

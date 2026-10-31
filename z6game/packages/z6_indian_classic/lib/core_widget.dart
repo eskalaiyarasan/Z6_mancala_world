@@ -16,6 +16,7 @@ class Z6IndianClassicPit extends StatelessWidget {
   final int index;
   final bool active;
   final int value;
+  final bool a;
   final Function(int index)? onPitTap;
 
   const Z6IndianClassicPit({
@@ -23,7 +24,8 @@ class Z6IndianClassicPit extends StatelessWidget {
     required this.index,
     required this.value,
     required this.active,
-    this.onPitTap,
+    required this.a,
+    required this.onPitTap,
   });
 
   @override
@@ -87,6 +89,7 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
   late Z6Store _store;
   final List<Z6Pit> _pits = [];
   bool onStoreChanged = false;
+  bool onChange = false;
   bool _tapEnable = false;
   String playername = "Player-X";
 
@@ -167,7 +170,9 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
           break;
         }
       }
-      setState(() {});
+      setState(() {
+        onChange = !onChange;
+      });
     }
   }
 
@@ -181,7 +186,9 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
           break;
         }
       }
-      setState(() {});
+      setState(() {
+        onChange = !onChange;
+      });
     }
   }
 
@@ -230,24 +237,31 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
           break;
       }
     }
-    setState(() {});
+    setState(() {
+      onChange = !onChange;
+    });
   }
 
   void myturn() async {
+    isTurn();
+    showTime();
+  }
+
+  void isTurn() {
     int now = _engine?.turn ?? -1;
+    debugPrint('\@Z6IndianClassicSideState -> \@myturn: $now ');
     turn = (now == widget.side) ? true : false;
     if (turn) {
       _tapEnable = true;
     }
-    showTime();
   }
 
   void onPitTapped(int index) {
-    if (_tapEnable) {
+    debugPrint(
+      '\@Z6IndianClassicSideState -> \@onPitTapped: ${widget.side}, ${widget.active}, $index ',
+    );
+    if (_tapEnable && widget.active) {
       _tapEnable = false;
-      debugPrint(
-        '\@Z6IndianClassicSideState -> \@onPitTapped: ${widget.side}, $index ',
-      );
       Z6IndianClassicInterface.move(widget.id, widget.side, index);
     }
   }
@@ -255,7 +269,7 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<Z6ThemeProvider>(context).currentTheme;
-
+    isTurn();
     return Center(
       child: Container(
         padding: EdgeInsets.all(16),
@@ -273,6 +287,7 @@ class Z6IndianClassicSideState extends State<Z6IndianClassicSide> {
                 active: pit.active,
                 index: pit.index,
                 value: pit.value,
+                a: onChange,
                 onPitTap: (index) {
                   onPitTapped(index);
                 },

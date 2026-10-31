@@ -51,6 +51,7 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
       Z6IndianClassicEvent.finish,
       gameOver,
     );
+
     side0 = Z6IndianClassicSide(
       id: widget.id,
       side: 0,
@@ -64,6 +65,7 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
   }
 
   void gameOver() async {
+    ended = true;
     debugPrint('\@Z6IndianClassicBoardState -> \@gameover');
     int winside = _engine?.winside ?? -1;
     if (winside >= 0) {
@@ -79,13 +81,13 @@ class Z6IndianClassicBoardState extends State<Z6IndianClassicBoard> {
   void startme() async {
     started = true;
     debugPrint('\@Z6IndianClassicBoardState -> \@start ');
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<Z6ThemeProvider>(context).currentTheme;
-    ended = _engine?.ended ?? false;
-    started = _engine?.started ?? false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Z6 Indian Classic", style: theme.color?.text),

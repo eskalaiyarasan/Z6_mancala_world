@@ -52,11 +52,15 @@ class _Z6IndianClassicAIState extends State<Z6IndianClassicAI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          Z6IndianClassicBoard(id: id, side: 0, both: false),
-          // Embedded AI Opponent Listener interacting via GlobalKey hooks
           Z6IndianClassicOpponent(id: id, side: 1),
+          Container(
+            decoration: BoxDecoration(color: Colors.blue),
+            width: 900,
+            height: 600,
+            child: Z6IndianClassicBoard(id: id, side: 0, both: false),
+          ),
         ],
       ),
     );
